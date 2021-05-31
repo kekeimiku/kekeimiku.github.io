@@ -1,0 +1,36 @@
+#+DATE: <2021-02-08 Mon 22:113>
+#+TITLE: 雾
+#+OPTIONS: num:nil \n:t html-postamble:nil
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css"/>
+
+* 《宁静祷文》
+
+    #+begin_quote
+    上帝，
+
+    请赐予我平静，去接受我无法改变的。
+   
+    给予我勇气，去改变我能改变的，
+   
+    赐我智慧，分辨这两者的区别。
+    #+end_quote
+
+* 《幸运星》
+
+    #+begin_quote   
+    我并不羡慕别人的人生，这就是所谓幸福。
+    #+end_quote
+
+* 《洛丽塔》
+
+    #+begin_quote
+    人有三样东西是无法隐瞒的，咳嗽、穷困和爱；你想隐瞒越欲盖弥彰。
+   
+    人有三样东西是不该挥霍的，身体、金钱和爱；你想挥霍却得不偿失。
+   
+    人有三样东西是无法挽留的，时间、生命和爱；你想挽留却渐行渐远。
+   
+    人有三样东西是不该回忆的，灾难、死亡和爱；你想回忆却苦不堪言。
+    #+end_quote
+
+
