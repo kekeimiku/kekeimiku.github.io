@@ -6,33 +6,28 @@
     <description>Recent content in Rust on 久病成医</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 29 Jun 2023 18:46:46 +0800</lastBuildDate><atom:link href="/tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Jun 2023 18:46:46 +0800</lastBuildDate>
+    <atom:link href="/tags/rust/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>macOS M2 dylib注入器</title>
       <link>/post/apple-soc-inject/</link>
       <pubDate>Thu, 29 Jun 2023 18:46:46 +0800</pubDate>
-      
       <guid>/post/apple-soc-inject/</guid>
       <description>在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于： https://github.com/scen/osxinj https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc &amp;hellip; 但</description>
     </item>
-    
     <item>
       <title>编写一个通用指针搜索器</title>
       <link>/post/pointersearch/</link>
       <pubDate>Tue, 27 Jun 2023 10:43:52 +0800</pubDate>
-      
       <guid>/post/pointersearch/</guid>
       <description>什么是指针搜索？ ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址</description>
     </item>
-    
     <item>
       <title>Go-Rust 编译器优化对比</title>
       <link>/post/goasm1/</link>
       <pubDate>Mon, 26 Jun 2023 10:46:46 +0800</pubDate>
-      
       <guid>/post/goasm1/</guid>
       <description>Go release模式 编译为x86-64 我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式 1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32,</description>
     </item>
-    
   </channel>
 </rss>
