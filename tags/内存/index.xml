@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>内存 on 久病成医</title>
+    <title>内存 on KK</title>
     <link>/tags/%E5%86%85%E5%AD%98/</link>
-    <description>Recent content in 内存 on 久病成医</description>
+    <description>Recent content in 内存 on KK</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 27 Jun 2023 10:43:52 +0800</lastBuildDate>
@@ -13,7 +13,7 @@
       <link>/post/pointersearch/</link>
       <pubDate>Tue, 27 Jun 2023 10:43:52 +0800</pubDate>
       <guid>/post/pointersearch/</guid>
-      <description>什么是指针搜索？ ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址</description>
+      <description>什么是指针搜索？ 在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我</description>
     </item>
   </channel>
 </rss>

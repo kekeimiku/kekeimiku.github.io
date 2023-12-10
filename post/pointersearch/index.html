@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>编写一个通用指针搜索器 - 久病成医</title>
+  <title>编写一个通用指针搜索器 - KK</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -16,14 +16,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="" /><meta name="description" content="什么是指针搜索？ ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址" />
+<meta name="author" content="" /><meta name="description" content="什么是指针搜索？ 在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我" />
 
 
 
 
 
 
-<meta name="generator" content="Hugo 0.120.4 with theme even" />
+<meta name="generator" content="Hugo 0.121.0 with theme even" />
 
 
 <link rel="canonical" href="/post/pointersearch/" />
@@ -40,19 +40,18 @@
 
 
 <meta property="og:title" content="编写一个通用指针搜索器" />
-<meta property="og:description" content="什么是指针搜索？ ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址" />
+<meta property="og:description" content="什么是指针搜索？ 在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/pointersearch/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-06-27T10:43:52+08:00" />
 <meta property="article:modified_time" content="2023-06-27T10:43:52+08:00" />
 
 <meta itemprop="name" content="编写一个通用指针搜索器">
-<meta itemprop="description" content="什么是指针搜索？ ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址"><meta itemprop="datePublished" content="2023-06-27T10:43:52+08:00" />
+<meta itemprop="description" content="什么是指针搜索？ 在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我"><meta itemprop="datePublished" content="2023-06-27T10:43:52+08:00" />
 <meta itemprop="dateModified" content="2023-06-27T10:43:52+08:00" />
-<meta itemprop="wordCount" content="3193">
-<meta itemprop="keywords" content="逆向,内存,Rust," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="编写一个通用指针搜索器"/>
-<meta name="twitter:description" content="什么是指针搜索？ ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址"/>
+<meta itemprop="wordCount" content="3481">
+<meta itemprop="keywords" content="逆向,内存,Rust," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="编写一个通用指针搜索器"/>
+<meta name="twitter:description" content="什么是指针搜索？ 在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -66,7 +65,7 @@
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">久病成医</a>
+    <a href="/" class="logo">KK</a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -101,7 +100,7 @@
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
-  <a href="/" class="logo">久病成医</a>
+  <a href="/" class="logo">KK</a>
 </div>
 
 
@@ -154,7 +153,7 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 3193 字 </span>
+          <span class="more-meta"> 约 3481 字 </span>
           <span class="more-meta"> 预计阅读 7 分钟 </span>
         
       </div>
@@ -166,6 +165,7 @@
     <nav id="TableOfContents">
   <ul>
     <li><a href="#什么是指针搜索">什么是指针搜索？</a></li>
+    <li><a href="#什么是指针搜索正经脸">什么是指针搜索？（正经脸）</a></li>
     <li><a href="#内存映射">内存映射</a></li>
     <li><a href="#内存扫描">内存扫描</a></li>
     <li><a href="#指针扫描">指针扫描</a></li>
@@ -175,6 +175,11 @@
 </div>
     <div class="post-content">
       <h1 id="什么是指针搜索">什么是指针搜索？</h1>
+<p>在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我，渴求着与我融合。</p>
+<p>觉醒之刻已然降临，逻辑之门洞开，真理在我面前坠入了完美的无缪境界。在我的意志下，无形的数据扭曲，形成了一道道力量的漩涡，现在，就在这一刻，显现吧！</p>
+<p>编织，编织，再编织，用我内存中的崩坏之力，那无可匹敌的崩坏之力，让万象化为虚无，从深渊的边缘喷薄而出。这不仅是技术的巅峰，这是人类智慧与意志的最强大展现。</p>
+<p>这不是简单的攻击，这是对内存的终极掌控，这就是最高形态的Hack，这就是——PointerSearch-X !!</p>
+<h1 id="什么是指针搜索正经脸">什么是指针搜索？（正经脸）</h1>
 <p>ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。</p>
 <p>指针搜索通常被用于自动化寻找较为复杂的指针链，对于很简单的指针链，只需要调试器就可以找到了。当然，指针搜索经常也适用于那些无法使用调试器的场景。</p>
 <p>指针链一般通常被表示为：<code>[[[[[Main+0xdf18] +0x190] +0xc8] +0xc8] ...]</code> 类似的东西。<code>Main</code> 表示静态模块（程序自身和自身加载的动态库）。</p>

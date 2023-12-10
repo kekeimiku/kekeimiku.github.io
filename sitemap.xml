@@ -30,6 +30,13 @@
   </url>
   
   <url>
+    <loc>/</loc>
+    <lastmod>2023-09-06T19:39:52+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>/post/lazy_static_my/</loc>
     <lastmod>2023-09-06T19:39:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -45,13 +52,6 @@
   
   <url>
     <loc>/tags/</loc>
-    <lastmod>2023-09-06T19:39:52+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>/</loc>
     <lastmod>2023-09-06T19:39:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

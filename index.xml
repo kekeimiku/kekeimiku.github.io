@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>久病成医</title>
+    <title>KK</title>
     <link>/</link>
-    <description>Recent content on 久病成医</description>
+    <description>Recent content on KK</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 06 Sep 2023 19:39:52 +0800</lastBuildDate>
@@ -13,7 +13,7 @@
       <link>/ss/</link>
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       <guid>/ss/</guid>
-      <description>2023-11-14T21:44:33+08:00 我静坐在尸山血海中，细嗅花香 2023-11-11T18:48:12+08:00 真他妈无语了，折腾半天测试跑不通，以为是代码写错了，原来是测试写错了。 2023-10-18T13:43:41+08:00 https://github.com/HexFiend/HexFiend 个人认为是macos上最优质的软件</description>
+      <description>2023-11-24T16:01:23+08:00 死亡只是一瞬间，活着却是一辈子，比起死亡，一辈子活得不尽兴，才真正可怕。 老爸今年55岁，没几年活头了，打一辈子工种一辈子地，省吃俭用，没有</description>
     </item>
     <item>
       <title>友接</title>
@@ -27,7 +27,7 @@
       <link>/about/</link>
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       <guid>/about/</guid>
-      <description>一时兴起</description>
+      <description>在这个由代码编织的虚拟世界之中，吾名KK，逐字节征服逻辑的黑客，编程语言的宗师，无往不利的代码战士。在无尽的数据流中穿梭，以键盘为剑，以屏幕</description>
     </item>
     <item>
       <title>lazy_static! { static ref My }</title>
@@ -48,7 +48,7 @@
       <link>/post/pointersearch/</link>
       <pubDate>Tue, 27 Jun 2023 10:43:52 +0800</pubDate>
       <guid>/post/pointersearch/</guid>
-      <description>什么是指针搜索？ ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址</description>
+      <description>什么是指针搜索？ 在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我</description>
     </item>
     <item>
       <title>Go-Rust 编译器优化对比</title>
