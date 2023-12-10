@@ -49,7 +49,7 @@
 <meta itemprop="name" content="编写一个通用指针搜索器">
 <meta itemprop="description" content="什么是指针搜索？ 在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我"><meta itemprop="datePublished" content="2023-06-27T10:43:52+08:00" />
 <meta itemprop="dateModified" content="2023-06-27T10:43:52+08:00" />
-<meta itemprop="wordCount" content="3481">
+<meta itemprop="wordCount" content="3519">
 <meta itemprop="keywords" content="逆向,内存,Rust," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="编写一个通用指针搜索器"/>
 <meta name="twitter:description" content="什么是指针搜索？ 在这无尽的数字深渊中，我是探寻者，我名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我"/>
 
@@ -153,8 +153,8 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 3481 字 </span>
-          <span class="more-meta"> 预计阅读 7 分钟 </span>
+          <span class="more-meta"> 约 3519 字 </span>
+          <span class="more-meta"> 预计阅读 8 分钟 </span>
         
       </div>
     </header>
@@ -186,7 +186,24 @@
 <p>在 <a href="https://github.com/kekeimiku/PointerSearcher-X">PointerSearch-X</a> 中表示为 <code>Main+57112@400@200@200...</code>。</p>
 <p>以下文章将讲解如何非常粗暴的实现指针搜索。</p>
 <p>以下的代码 <code>完全不考虑性能和设计模式</code> 因为性能优化/设计模式的种类有太多，毕竟一千个人眼中有一千个哈姆雷特，这篇文章的目标是简单，实现目标为主。</p>
-<blockquote>
+<p>如果想知道如何优化，可以参考 <a href="https://github.com/kekeimiku/PointerSearcher-X">PointerSearch-X</a> 中的 PtrsxScanner 结构</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PtrsxScanner</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">index</span>: <span class="nc">RangeMap</span><span class="o">&lt;</span><span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">forward</span>: <span class="nc">BTreeSet</span><span class="o">&lt;</span><span class="kt">usize</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">reverse</span>: <span class="nc">BTreeMap</span><span class="o">&lt;</span><span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">usize</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
 <p>扫描所有内存，寻找表示指针且实际上指向有效内存的值。
 然后把它们都放在索引Map中。
 然后从目标地址开始，并查询地址和地址最大偏移范围内的所有指针值。
