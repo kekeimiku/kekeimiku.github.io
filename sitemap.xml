@@ -24,34 +24,69 @@
   
   <url>
     <loc>/categories/</loc>
-    <lastmod>2023-09-06T19:39:52+08:00</lastmod>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>/</loc>
-    <lastmod>2023-09-06T19:39:52+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>/post/lazy_static_my/</loc>
-    <lastmod>2023-09-06T19:39:52+08:00</lastmod>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2023-09-06T19:39:52+08:00</lastmod>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/rust/</loc>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>/tags/</loc>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>/post/pointersearch2/</loc>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/%E5%86%85%E5%AD%98/</loc>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/%E9%80%86%E5%90%91/</loc>
+    <lastmod>2024-01-19T22:30:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>/post/lazy_static_my/</loc>
     <lastmod>2023-09-06T19:39:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -79,35 +114,7 @@
   </url>
   
   <url>
-    <loc>/tags/rust/</loc>
-    <lastmod>2023-06-29T18:46:46+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>/categories/%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2023-06-29T18:46:46+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>/post/pointersearch/</loc>
-    <lastmod>2023-06-27T10:43:52+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E5%86%85%E5%AD%98/</loc>
-    <lastmod>2023-06-27T10:43:52+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E9%80%86%E5%90%91/</loc>
+    <loc>/post/pointersearch1/</loc>
     <lastmod>2023-06-27T10:43:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

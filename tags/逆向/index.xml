@@ -6,13 +6,20 @@
     <description>Recent content in 逆向 on KK</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 27 Jun 2023 10:43:52 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jan 2024 22:30:11 +0800</lastBuildDate>
     <atom:link href="/tags/%E9%80%86%E5%90%91/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>编写一个通用指针搜索器</title>
-      <link>/post/pointersearch/</link>
+      <title>编写一个通用指针搜索器（2）</title>
+      <link>/post/pointersearch2/</link>
+      <pubDate>Fri, 19 Jan 2024 22:30:11 +0800</pubDate>
+      <guid>/post/pointersearch2/</guid>
+      <description>！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。 ！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很</description>
+    </item>
+    <item>
+      <title>编写一个通用指针搜索器（1）</title>
+      <link>/post/pointersearch1/</link>
       <pubDate>Tue, 27 Jun 2023 10:43:52 +0800</pubDate>
-      <guid>/post/pointersearch/</guid>
+      <guid>/post/pointersearch1/</guid>
       <description>什么是指针搜索？ 在这无尽的数字深渊中，吾是探寻者，吾名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我</description>
     </item>
   </channel>
