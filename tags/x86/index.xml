@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>X86 on KK</title>
+    <link>/tags/x86/</link>
+    <description>Recent content in X86 on KK</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 14 Sep 2024 15:53:21 +0800</lastBuildDate>
+    <atom:link href="/tags/x86/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>是什么(写入/访问)了这个地址</title>
+      <link>/post/bpaddr/</link>
+      <pubDate>Sat, 14 Sep 2024 15:53:21 +0800</pubDate>
+      <guid>/post/bpaddr/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;&#xA;&lt;p&gt;这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

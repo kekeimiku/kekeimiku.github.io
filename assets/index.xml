@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Assets on KK</title>
+    <link>//localhost:1313/assets/</link>
+    <description>Recent content in Assets on KK</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 14 Sep 2024 15:53:21 +0800</lastBuildDate>
+    <atom:link href="//localhost:1313/assets/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Find out what (accesses,writes) this address</title>
+      <link>//localhost:1313/assets/bpaddr/</link>
+      <pubDate>Sat, 14 Sep 2024 15:53:21 +0800</pubDate>
+      <guid>//localhost:1313/assets/bpaddr/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;&#xA;&lt;p&gt;这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。&lt;/p&gt;&#xA;&lt;h1 id=&#34;无知就是幸福&#34;&gt;无知就是幸福&lt;/h1&gt;&#xA;&lt;p&gt;最近使用 &lt;a href=&#34;https://github.com/korcankaraokcu/PINCE&#34;&gt;PINCE&lt;/a&gt; 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

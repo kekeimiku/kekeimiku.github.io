@@ -16,14 +16,16 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="" /><meta name="description" content="！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。 ！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很" />
+<meta name="author" content="" /><meta name="description" content="！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。
+！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很多代码，逻辑，已经发生变化。
+" />
 
 
 
 
 
 
-<meta name="generator" content="Hugo 0.125.7 with theme even" />
+<meta name="generator" content="Hugo 0.134.2 with theme even" />
 
 
 <link rel="canonical" href="/post/pointersearch2/" />
@@ -42,7 +44,8 @@
 <meta property="og:url" content="/post/pointersearch2/">
   <meta property="og:site_name" content="KK">
   <meta property="og:title" content="编写一个通用指针搜索器（2）">
-  <meta property="og:description" content="！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。 ！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很">
+  <meta property="og:description" content="！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。
+！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很多代码，逻辑，已经发生变化。">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
@@ -53,12 +56,16 @@
     <meta property="article:tag" content="Rust">
 
   <meta itemprop="name" content="编写一个通用指针搜索器（2）">
-  <meta itemprop="description" content="！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。 ！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很">
+  <meta itemprop="description" content="！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。
+！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很多代码，逻辑，已经发生变化。">
   <meta itemprop="datePublished" content="2024-01-19T22:30:11+08:00">
   <meta itemprop="dateModified" content="2024-01-19T22:30:11+08:00">
   <meta itemprop="wordCount" content="2740">
-  <meta itemprop="keywords" content="逆向,内存,Rust"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="编写一个通用指针搜索器（2）">
-<meta name="twitter:description" content="！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。 ！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很">
+  <meta itemprop="keywords" content="逆向,内存,Rust">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="编写一个通用指针搜索器（2）">
+  <meta name="twitter:description" content="！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。
+！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很多代码，逻辑，已经发生变化。">
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -601,7 +608,11 @@
           <a href="/tags/rust/">Rust</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/bpaddr/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">是什么(写入/访问)了这个地址</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/lazy_static_my/">
             <span class="next-text nav-default">lazy_static! { static ref My }</span>
             <span class="next-text nav-mobile">下一篇</span>

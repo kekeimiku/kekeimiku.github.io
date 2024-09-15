@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Go · KK</title>
+  <title>Find out what (accesses,writes) this address - KK</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -16,19 +16,19 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="" />
+<meta name="author" content="" /><meta name="description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。
+无知就是幸福 最近使用 PINCE 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。
+" />
 
 
 
 
 
 
-<meta name="generator" content="Hugo 0.134.2 with theme even" />
+<meta name="generator" content="Hugo 0.134.1 with theme even" />
 
 
-<link rel="canonical" href="/tags/go/" />
-  <link href="/tags/go/index.xml" rel="alternate" type="application/rss+xml" title="KK" />
-  <link href="/tags/go/index.xml" rel="feed" type="application/rss+xml" title="KK" />
+<link rel="canonical" href="//localhost:1313/assets/bpaddr/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -41,17 +41,32 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:url" content="/tags/go/">
+<meta property="og:url" content="//localhost:1313/assets/bpaddr/">
   <meta property="og:site_name" content="KK">
-  <meta property="og:title" content="Go">
+  <meta property="og:title" content="Find out what (accesses,writes) this address">
+  <meta property="og:description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。
+无知就是幸福 最近使用 PINCE 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。">
   <meta property="og:locale" content="en">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="assets">
+    <meta property="article:published_time" content="2024-09-14T15:53:21+08:00">
+    <meta property="article:modified_time" content="2024-09-14T15:53:21+08:00">
+    <meta property="article:tag" content="逆向">
+    <meta property="article:tag" content="内存">
+    <meta property="article:tag" content="Rust">
+    <meta property="article:tag" content="X86">
 
-  <meta itemprop="name" content="Go">
-  <meta itemprop="datePublished" content="2023-06-26T10:46:46+08:00">
-  <meta itemprop="dateModified" content="2023-06-26T10:46:46+08:00">
+  <meta itemprop="name" content="Find out what (accesses,writes) this address">
+  <meta itemprop="description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。
+无知就是幸福 最近使用 PINCE 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。">
+  <meta itemprop="datePublished" content="2024-09-14T15:53:21+08:00">
+  <meta itemprop="dateModified" content="2024-09-14T15:53:21+08:00">
+  <meta itemprop="wordCount" content="928">
+  <meta itemprop="keywords" content="逆向,内存,Rust,X86">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Go">
+  <meta name="twitter:title" content="Find out what (accesses,writes) this address">
+  <meta name="twitter:description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。
+无知就是幸福 最近使用 PINCE 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。">
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -143,29 +158,53 @@
     <main id="main" class="main">
       <div class="content-wrapper">
         <div id="content" class="content">
-          <section id="archive" class="archive">
-  <div class="archive-title tag">
-        <h2 class="archive-name">Go</h2>
-      </div>
+          <article class="post">
+  <div class="post-content">
+    <h1 id="前言">前言</h1>
+<p>这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。</p>
+<h1 id="无知就是幸福">无知就是幸福</h1>
+<p>最近使用 <a href="https://github.com/korcankaraokcu/PINCE">PINCE</a> 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。</p>
+<p>于是我准备用 Rust 自己实现这个功能。最开始想法非常简单：</p>
+<ol>
+<li>
+<p>只需要使用Linux的 ptrace 即可轻松实现断点功能。</p>
+</li>
+<li>
+<p>通过 /proc/pid/maps 查询 IP 寄存器储存的地址所在的内存区域。</p>
+</li>
+<li>
+<p>反编译获取附近指令，猜测内存操作数，再查询对应寄存器储存的数值即可。</p>
+</li>
+</ol>
+<p>但实际上，不知为何，性能非常差劲，依然让游戏卡到几乎没法正常运行。通过互联网上一些相关搜索发现：</p>
+<ul>
+<li>由于 ptrace 内部是系统调用机制，需要在内核态和用户态切换。当事件数量比较多时，繁忙的切换必然会影响原有服务的性能；</li>
+</ul>
+<p>很多人只看到了 ptrace 简单易用，功能还多的好处，却忽略了它对进程性能带来的影响。实际上，我只是需要一个断点，于是发现了 perf。相对于 ptrace 来说，perf trace 基于内核事件，自然要比进程跟踪的性能好很多。</p>
+<h1 id="重置一切">重置一切</h1>
+<p>它非常容易，我不想解释太多，总之，我又遇到了其它问题。现在我的程序虽然对游戏性能 几乎/完全 没有肉眼可见的性能影响，但依然有需要优化的地方，例如：</p>
+<h2 id="1-缓慢的反汇编">1. 缓慢的反汇编。</h2>
+<p><img src="../assets/bench-ath.png" alt="img1"></p>
+<p>没错，我使用的就是这个几乎性能最差，但是业界使用量最大的 Capstone 完成了我需要的功能。这导致我需要数秒的时间才能获取到一个断点的数据，然而实际上我的断点每秒可能命中几十数百上千次。它的性能让我几乎没法用。</p>
+<p>于是我切换了看起来性能最好的 Iced ，性能确实得到了极大改善。当然，后来我发现实际上我只是需要 IP 附近的几百个字节，使用 Capstone 还是 Iced 根本没有体感上的性能差距，但快一些总是好的。</p>
+<h2 id="2-获取内存操作的寄存器地址">2. 获取内存操作的寄存器地址</h2>
+<p>最开始我甚至想字节解析反汇编的字符串，其中 [] 中间就是内存操作寄存器的名字。但是实际上只需要遍历操作计数然后获取寄存器类型，如果是内存类型，就可以直接查询断点数据获取地址。</p>
+<h2 id="3-实现只读断点">3. 实现只读断点</h2>
+<p><img src="../assets/intel_reg.png" alt="img2"></p>
+<p>根据 intel 官方手册所说，x86_64 硬件根本不支持只读断点。但是有一种围魏救赵的办法，可以假装支持只读断点。</p>
+<p>办法也非常简单，因为 x86_64 支持设置 写入/读写 断点，所以只需要同事使用两个断点的数据，即使用<code>写入</code>的数据，去过滤<code>读写</code>中的<code>写</code>，即可实现只读断点功能。</p>
+<h1 id="最终效果">最终效果</h1>
+<p><img src="../assets/ptr_watch.png" alt="img3"></p>
+<p>完整代码: <a href="https://github.com/kekeimiku/PointerWatcher-X">https://github.com/kekeimiku/PointerWatcher-X</a></p>
 
-  <div class="archive-post">
-      <span class="archive-post-time">
-        2023-06-26
-      </span>
-      <span class="archive-post-title">
-        <a href="/post/goasm1/" class="archive-post-link">
-          Go-Rust 编译器优化对比
-        </a>
-      </span>
-    </div>
-</section>
-
-<nav class="pagination">
-  
-  
-</nav>
+  </div>
+</article>
         </div>
         
+
+  
+
+  
 
       </div>
     </main>
@@ -175,7 +214,6 @@
       <a href="mailto:kekelanact@gmail.com" class="iconfont icon-email" title="email"></a>
       <a href="https://github.com/kekeimiku" class="iconfont icon-github" title="github"></a>
   
-    <a href="/tags/go/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss" /></a>
 </div>
 
 <div class="copyright">

@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.125.7 with theme even" />
+<meta name="generator" content="Hugo 0.134.2 with theme even" />
 
 
 <link rel="canonical" href="/" />
@@ -48,8 +48,10 @@
   <meta property="og:type" content="website">
 
   <meta itemprop="name" content="KK">
-  <meta itemprop="dateModified" content="2024-01-19T22:30:11+08:00"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="KK">
-<meta name="twitter:description" content="">
+  <meta itemprop="datePublished" content="2024-09-14T15:53:21+08:00">
+  <meta itemprop="dateModified" content="2024-09-14T15:53:21+08:00">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="KK">
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -144,6 +146,30 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/bpaddr/">是什么(写入/访问)了这个地址</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2024-09-14 </span>
+      <div class="post-category">
+          <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+          </div>
+        <span class="more-meta"> 约 940 字 </span>
+        <span class="more-meta"> 预计阅读 2 分钟 </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <h1 id="前言">前言</h1>
+<p>这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/bpaddr/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/pointersearch2/">编写一个通用指针搜索器（2）</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2024-01-19 </span>
@@ -157,7 +183,8 @@
   
   <div class="post-content">
     <div class="post-summary">
-      ！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。 ！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很
+      <p>！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。</p>
+<p>！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很多代码，逻辑，已经发生变化。</p>
     </div>
     <div class="read-more">
       <a href="/post/pointersearch2/" class="read-more-link">阅读更多</a>
@@ -180,7 +207,13 @@
   
   <div class="post-content">
     <div class="post-summary">
-      打工到现在，已经记不清是七年还是八年了，回顾过去走过的路浑浑噩噩（无奈）。还是想思考一下自己究竟干了什么，该干什么。 过去 - 混乱的职业生涯 小时
+      <blockquote>
+<p>打工到现在，已经记不清是七年还是八年了，回顾过去走过的路浑浑噩噩（无奈）。还是想思考一下自己究竟干了什么，该干什么。</p>
+</blockquote>
+<h1 id="过去---混乱的职业生涯">过去 - 混乱的职业生涯</h1>
+<ul>
+<li>
+<p>小时候：老家位于黑龙江一处农场，出生在一个代号叫48的农村联队，从小和爷爷奶奶以及其它亲戚生活，吃百家饭长大，父亲常年在外打工，母亲是人贩子，刚出生的时候便把我抛弃了，从小到大没有见过母亲，搞得我爸精神也有点问题，经常自言自语骂我妈。导致我从小就喜欢乱想，不喜欢与人交流。</p>
     </div>
     <div class="read-more">
       <a href="/post/lazy_static_my/" class="read-more-link">阅读更多</a>
@@ -203,7 +236,11 @@
   
   <div class="post-content">
     <div class="post-summary">
-      在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于： https://github.com/scen/osxinj https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc &hellip; 但
+      <p>在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于：</p>
+<p><a href="https://github.com/scen/osxinj">https://github.com/scen/osxinj</a></p>
+<p><a href="https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc">https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc</a></p>
+<p>&hellip;</p>
+<p>但是frida我从来没有用过，感觉又脏又重，似乎还要依赖 <code>ptrace</code>，并且看到其它人基于它编写的工具都动不动几十MB。</p>
     </div>
     <div class="read-more">
       <a href="/post/apple-soc-inject/" class="read-more-link">阅读更多</a>
@@ -226,7 +263,8 @@
   
   <div class="post-content">
     <div class="post-summary">
-      什么是指针搜索？ 在这无尽的数字深渊中，吾是探寻者，吾名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我
+      <h1 id="什么是指针搜索">什么是指针搜索？</h1>
+<p>在这无尽的数字深渊中，吾是探寻者，吾名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我，渴求着与我融合。</p>
     </div>
     <div class="read-more">
       <a href="/post/pointersearch1/" class="read-more-link">阅读更多</a>
@@ -249,7 +287,38 @@
   
   <div class="post-content">
     <div class="post-summary">
-      Go release模式 编译为x86-64 我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式 1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32,
+      <h1 id="go">Go</h1>
+<p>release模式 编译为x86-64</p>
+<p>我不知道Go除了使用 <code>go build file.go</code> 是否还有其它命令才能真正编译为release模式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">setBit1</span><span class="p">(</span><span class="nx">reg</span> <span class="o">*</span><span class="kt">uint32</span><span class="p">,</span> <span class="nx">value</span> <span class="kt">uint16</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">15</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">bitToSet</span> <span class="o">:=</span> <span class="p">((</span><span class="nx">value</span> <span class="o">&gt;&gt;</span> <span class="nx">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">		<span class="o">*</span><span class="nx">reg</span> <span class="o">&amp;=</span> <span class="p">^(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">bitToSet</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="o">*</span><span class="nx">reg</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="o">*</span><span class="nx">reg</span> <span class="o">&amp;=</span> <span class="p">^(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>它生成的汇编是什么样的呢？</p>
     </div>
     <div class="read-more">
       <a href="/post/goasm1/" class="read-more-link">阅读更多</a>

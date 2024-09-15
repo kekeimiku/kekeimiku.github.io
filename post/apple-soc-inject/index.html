@@ -16,14 +16,19 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="" /><meta name="description" content="在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于： https://github.com/scen/osxinj https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc &amp;hellip; 但" />
+<meta name="author" content="" /><meta name="description" content="在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于：
+https://github.com/scen/osxinj
+https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc
+&hellip;
+但是frida我从来没有用过，感觉又脏又重，似乎还要依赖 ptrace，并且看到其它人基于它编写的工具都动不动几十MB。
+" />
 
 
 
 
 
 
-<meta name="generator" content="Hugo 0.125.7 with theme even" />
+<meta name="generator" content="Hugo 0.134.2 with theme even" />
 
 
 <link rel="canonical" href="/post/apple-soc-inject/" />
@@ -42,7 +47,11 @@
 <meta property="og:url" content="/post/apple-soc-inject/">
   <meta property="og:site_name" content="KK">
   <meta property="og:title" content="macOS M2 dylib注入器">
-  <meta property="og:description" content="在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于： https://github.com/scen/osxinj https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc … 但">
+  <meta property="og:description" content="在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于：
+https://github.com/scen/osxinj
+https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc
+…
+但是frida我从来没有用过，感觉又脏又重，似乎还要依赖 ptrace，并且看到其它人基于它编写的工具都动不动几十MB。">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
@@ -51,12 +60,22 @@
     <meta property="article:tag" content="Rust">
 
   <meta itemprop="name" content="macOS M2 dylib注入器">
-  <meta itemprop="description" content="在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于： https://github.com/scen/osxinj https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc &hellip; 但">
+  <meta itemprop="description" content="在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于：
+https://github.com/scen/osxinj
+https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc
+…
+但是frida我从来没有用过，感觉又脏又重，似乎还要依赖 ptrace，并且看到其它人基于它编写的工具都动不动几十MB。">
   <meta itemprop="datePublished" content="2023-06-29T18:46:46+08:00">
   <meta itemprop="dateModified" content="2023-06-29T18:46:46+08:00">
   <meta itemprop="wordCount" content="455">
-  <meta itemprop="keywords" content="Rust"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="macOS M2 dylib注入器">
-<meta name="twitter:description" content="在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于： https://github.com/scen/osxinj https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc &hellip; 但">
+  <meta itemprop="keywords" content="Rust">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="macOS M2 dylib注入器">
+  <meta name="twitter:description" content="在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于：
+https://github.com/scen/osxinj
+https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc
+…
+但是frida我从来没有用过，感觉又脏又重，似乎还要依赖 ptrace，并且看到其它人基于它编写的工具都动不动几十MB。">
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
