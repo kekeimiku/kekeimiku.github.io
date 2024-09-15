@@ -58,7 +58,7 @@
   <meta itemprop="description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。">
   <meta itemprop="datePublished" content="2024-09-14T15:53:21+08:00">
   <meta itemprop="dateModified" content="2024-09-14T15:53:21+08:00">
-  <meta itemprop="wordCount" content="940">
+  <meta itemprop="wordCount" content="1041">
   <meta itemprop="keywords" content="逆向,内存,Rust,X86">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="是什么(写入/访问)了这个地址">
@@ -164,8 +164,8 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 940 字 </span>
-          <span class="more-meta"> 预计阅读 2 分钟 </span>
+          <span class="more-meta"> 约 1041 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
         
       </div>
     </header>
@@ -193,7 +193,7 @@
       <h1 id="前言">前言</h1>
 <p>这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。</p>
 <h1 id="无知就是幸福">无知就是幸福</h1>
-<p>最近使用 <a href="https://github.com/korcankaraokcu/PINCE">PINCE</a> 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。</p>
+<p>最近使用 <a href="https://github.com/korcankaraokcu/PINCE">PINCE</a> 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，由于断点命中次数太多，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。</p>
 <p>于是我准备用 Rust 自己实现这个功能。最开始想法非常简单：</p>
 <ol>
 <li>
@@ -216,7 +216,12 @@
 <h2 id="1-缓慢的反汇编">1. 缓慢的反汇编。</h2>
 <p><img src="/assets/bench-ath.png" alt="img1"></p>
 <p>没错，我使用的就是这个几乎性能最差，但是业界使用量最大的 Capstone 完成了我需要的功能。这导致我需要数秒的时间才能获取到一个断点的数据，然而实际上我的断点每秒可能命中几十数百上千次。它的性能让我几乎没法用。</p>
-<p>于是我切换了看起来性能最好的 Iced ，性能确实得到了极大改善。当然，后来我发现实际上我只是需要 IP 附近的几百个字节，使用 Capstone 还是 Iced 根本没有体感上的性能差距，但快一些总是好的。</p>
+<p>于是使用了看起来性能最好的 Iced 重构代码，幸运的是，Iced 不仅非常成熟而且性能非常好，使用它后获得了极大的性能改善。不过，后来我发现实际上我只是需要 IP 附近的几百个字节，使用 Capstone 还是 Iced 根本没有体感上的性能差距，但快一些总是好的。</p>
+<p>Yaxpeax 虽然也很快，但是看起来成熟度远远不如 Capstone/Iced，所以没有尝试。</p>
+<p>以下是提到的几个反汇编库的链接</p>
+<p>Iced: <a href="https://github.com/capstone-engine/capstone">https://github.com/capstone-engine/capstone</a></p>
+<p>Capstone: <a href="https://github.com/icedland/iced">https://github.com/icedland/iced</a></p>
+<p>Yaxpeax: <a href="https://github.com/iximeow/yaxpeax-x86">https://github.com/iximeow/yaxpeax-x86</a></p>
 <h2 id="2-获取内存操作的寄存器地址">2. 获取内存操作的寄存器地址</h2>
 <p>最开始我甚至想字节解析反汇编的字符串，其中 [] 中间就是内存操作寄存器的名字。但是实际上只需要遍历操作计数然后获取寄存器类型，如果是内存类型，就可以直接查询断点数据获取地址。</p>
 <h2 id="3-实现只读断点">3. 实现只读断点</h2>
