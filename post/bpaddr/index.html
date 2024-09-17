@@ -58,7 +58,7 @@
   <meta itemprop="description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。">
   <meta itemprop="datePublished" content="2024-09-14T15:53:21+08:00">
   <meta itemprop="dateModified" content="2024-09-14T15:53:21+08:00">
-  <meta itemprop="wordCount" content="1041">
+  <meta itemprop="wordCount" content="1079">
   <meta itemprop="keywords" content="逆向,内存,Rust,X86">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="是什么(写入/访问)了这个地址">
@@ -164,7 +164,7 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 1041 字 </span>
+          <span class="more-meta"> 约 1079 字 </span>
           <span class="more-meta"> 预计阅读 3 分钟 </span>
         
       </div>
@@ -210,7 +210,7 @@
 <ul>
 <li>由于 ptrace 内部是系统调用机制，需要在内核态和用户态切换。当事件数量比较多时，繁忙的切换必然会影响原有服务的性能；</li>
 </ul>
-<p>很多人只看到了 ptrace 简单易用，功能还多的好处，却忽略了它对进程性能带来的影响。实际上，我只是需要一个断点，于是发现了 perf。相对于 ptrace 来说，perf trace 基于内核事件，自然要比进程跟踪的性能好很多。</p>
+<p>很多人只看到了 ptrace 简单易用，功能还多的好处，却忽略了它对进程性能带来的影响。实际上，我只是需要一个断点，于是发现了 perf。相对于 ptrace 来说，perf trace 基于内核事件，自然要比进程跟踪的性能好很多。使用 perf 还有一个潜在的好处，它目前无法被轻易检测，可以绕过大部分 AC (反作弊)。</p>
 <h1 id="重置一切">重置一切</h1>
 <p>使用 perf 重新实现断点功能非常容易，我不想解释太多，总之，现在我又遇到了其它问题。现在我的程序虽然对游戏性能 几乎/完全 没有肉眼可见的性能影响，但依然有需要优化的地方，例如：</p>
 <h2 id="1-缓慢的反汇编">1. 缓慢的反汇编。</h2>
