@@ -6,8 +6,15 @@
     <description>Recent content in 编程 on KK</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 14 Sep 2024 15:53:21 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 21 Oct 2024 04:10:43 +0800</lastBuildDate>
     <atom:link href="/categories/%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rust调用ios私有API</title>
+      <link>/post/rust-hackdev-ios/</link>
+      <pubDate>Mon, 21 Oct 2024 04:10:43 +0800</pubDate>
+      <guid>/post/rust-hackdev-ios/</guid>
+      <description>&lt;p&gt;以 &lt;code&gt;SpringBoardServices&lt;/code&gt; 为例。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>是什么(写入/访问)了这个地址</title>
       <link>/post/bpaddr/</link>

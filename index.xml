@@ -6,14 +6,14 @@
     <description>Recent content on KK</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 14 Sep 2024 15:53:21 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 21 Oct 2024 04:10:43 +0800</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>碎碎念</title>
       <link>/ss/</link>
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       <guid>/ss/</guid>
-      <description>&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;2024-02-21T14:07:21+08:00&lt;/p&gt;&#xA;&lt;p&gt;资本家不会因为生产力的提高就让一个人从8小时工作降低到4小时 而是让2个人压缩成一个人。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;2024-02-16T11:20:33+08:00&lt;/p&gt;&#xA;&lt;p&gt;我想要的东西溢价几十倍也会买，不想要的即便免费送我也不要。&lt;/p&gt;</description>
+      <description>&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;2024-10-21T04:54:04+08:00&lt;/p&gt;&#xA;&lt;p&gt;tmd煞笔苹果的开发生态真是服了，写点代码全网找不到相关信息，全靠硬猜，要不就是靠圈子里口口相传&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;2024-10-16T00:09:11+08:00&lt;/p&gt;&#xA;&lt;p&gt;压力好大，想喝酒，烟也不想戒了，就那样吧，不醉不归&lt;/p&gt;</description>
     </item>
     <item>
       <title>友接</title>
@@ -28,6 +28,13 @@
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       <guid>/about/</guid>
       <description>&lt;p&gt;在这个由代码编织的虚拟世界之中，吾名KK，逐字节征服逻辑的黑客，编程语言的宗师，无往不利的代码战士。在无尽的数据流中穿梭，以键盘为剑，以屏幕为盾，守护着数字王国的安宁。现在，让你见识一下，我掌控代码之海的能力！&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Rust调用ios私有API</title>
+      <link>/post/rust-hackdev-ios/</link>
+      <pubDate>Mon, 21 Oct 2024 04:10:43 +0800</pubDate>
+      <guid>/post/rust-hackdev-ios/</guid>
+      <description>&lt;p&gt;以 &lt;code&gt;SpringBoardServices&lt;/code&gt; 为例。&lt;/p&gt;</description>
     </item>
     <item>
       <title>是什么(写入/访问)了这个地址</title>
