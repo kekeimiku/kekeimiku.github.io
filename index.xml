@@ -6,7 +6,7 @@
     <description>Recent content on KK</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 21 Oct 2024 04:10:43 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 23 Oct 2024 21:16:04 +0800</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>碎碎念</title>
@@ -28,6 +28,13 @@
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       <guid>/about/</guid>
       <description>&lt;p&gt;在这个由代码编织的虚拟世界之中，吾名KK，逐字节征服逻辑的黑客，编程语言的宗师，无往不利的代码战士。在无尽的数据流中穿梭，以键盘为剑，以屏幕为盾，守护着数字王国的安宁。现在，让你见识一下，我掌控代码之海的能力！&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>KK的独立开发日记（长期更新）</title>
+      <link>/post/kk_dev1/</link>
+      <pubDate>Mon, 21 Oct 2024 10:47:42 +0800</pubDate>
+      <guid>/post/kk_dev1/</guid>
+      <description>&lt;p&gt;NopX 的开发记录。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Rust调用ios私有API</title>
