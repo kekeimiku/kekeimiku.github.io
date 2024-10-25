@@ -55,7 +55,7 @@
   <meta itemprop="description" content="NopX 的开发记录。">
   <meta itemprop="datePublished" content="2024-10-21T10:47:42+08:00">
   <meta itemprop="dateModified" content="2024-10-23T21:16:04+08:00">
-  <meta itemprop="wordCount" content="939">
+  <meta itemprop="wordCount" content="1100">
   <meta itemprop="keywords" content="NopX">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="KK的独立开发日记（长期更新）">
@@ -161,8 +161,8 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 939 字 </span>
-          <span class="more-meta"> 预计阅读 2 分钟 </span>
+          <span class="more-meta"> 约 1100 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
         
       </div>
     </header>
@@ -172,6 +172,8 @@
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
   <ul>
+    <li><a href="#2024-10-25-第四天">2024-10-25 第四天</a></li>
+    <li><a href="#2024-10-24-第三天">2024-10-24 第三天</a></li>
     <li><a href="#2024-10-23-第二天">2024-10-23 第二天</a></li>
     <li><a href="#2024-10-22-第一天">2024-10-22 第一天</a></li>
     <li><a href="#2024-10-21-产品构思">2024-10-21 产品构思</a>
@@ -189,14 +191,20 @@
 </div>
     <div class="post-content">
       <p>NopX 的开发记录。</p>
+<h1 id="2024-10-25-第四天">2024-10-25 第四天</h1>
+<p>用 Rust 创建了 NxCore，自动生成 Swift Package，内部是 XCFramework，自动生成多个架构的绑定。</p>
+<p>用 SwiftUI 完成了基本的界面框架，暂时打算 UI 模仿 iMemSeeker 。</p>
+<h1 id="2024-10-24-第三天">2024-10-24 第三天</h1>
+<p>swift-bridge 功能实在太少了，例如 Vec<String> 一类的数据结构都不支持（可以正常生成代码，但各种协议都没用实现，没法直接调用），改用 uniffi 了。</p>
+<p>完成了获取进程列表的接口。</p>
 <h1 id="2024-10-23-第二天">2024-10-23 第二天</h1>
 <p>写了一些 mach 内核API相关 rust bind。</p>
 <p>swift 方面基本敲定了使用 swift-bridge。</p>
-<p>恶补学习 swiftui 相关知识。</p>
+<p>恶补学习 SwiftUI 相关知识。</p>
 <h1 id="2024-10-22-第一天">2024-10-22 第一天</h1>
 <p>简单调研了一下 rust 自动生成 swift 接口的方案，swift-bridge/uniffi。</p>
 <p>swift-bridge 性能好，但安全性比较难保证，用起来也比较麻烦，支持的类型不多。</p>
-<p>uniffi 性能比较差，好在支持的类型较多，并且可以方便的打包为框架。</p>
+<p>uniffi 性能比较差，好在支持的类型较多，并且可以方便的打包为 XCFramework。</p>
 <h1 id="2024-10-21-产品构思">2024-10-21 产品构思</h1>
 <p>打算走冷门赛道，做一款跨平台的内存修改器（名字暂定NopX）以及一个交流社区，致力于成为最优质的内存修改器。</p>
 <h2 id="nopx-app">NopX APP</h2>
