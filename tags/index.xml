@@ -6,19 +6,26 @@
     <description>Recent content in Tags on KK</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 23 Oct 2024 21:16:04 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 24 Nov 2024 13:12:21 +0800</lastBuildDate>
     <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>NopX</title>
-      <link>/tags/nopx/</link>
-      <pubDate>Mon, 21 Oct 2024 10:47:42 +0800</pubDate>
-      <guid>/tags/nopx/</guid>
+      <title>吐槽</title>
+      <link>/tags/%E5%90%90%E6%A7%BD/</link>
+      <pubDate>Sun, 24 Nov 2024 13:12:21 +0800</pubDate>
+      <guid>/tags/%E5%90%90%E6%A7%BD/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>C&#43;&#43;</title>
+      <link>/tags/c&#43;&#43;/</link>
+      <pubDate>Sun, 24 Nov 2024 12:08:21 +0800</pubDate>
+      <guid>/tags/c&#43;&#43;/</guid>
       <description></description>
     </item>
     <item>
       <title>Rust</title>
       <link>/tags/rust/</link>
-      <pubDate>Mon, 21 Oct 2024 04:10:43 +0800</pubDate>
+      <pubDate>Sun, 24 Nov 2024 12:08:21 +0800</pubDate>
       <guid>/tags/rust/</guid>
       <description></description>
     </item>

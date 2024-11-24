@@ -6,14 +6,14 @@
     <description>Recent content in 编程 on KK</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 23 Oct 2024 21:16:04 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 24 Nov 2024 12:08:21 +0800</lastBuildDate>
     <atom:link href="/categories/%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>KK的独立开发日记（长期更新）</title>
-      <link>/post/kk_dev1/</link>
-      <pubDate>Mon, 21 Oct 2024 10:47:42 +0800</pubDate>
-      <guid>/post/kk_dev1/</guid>
-      <description>&lt;p&gt;NopX 的开发记录。&lt;/p&gt;</description>
+      <title>c&#43;&#43;23 吐槽</title>
+      <link>/post/cpp23_ranges/</link>
+      <pubDate>Sun, 24 Nov 2024 12:08:21 +0800</pubDate>
+      <guid>/post/cpp23_ranges/</guid>
+      <description>&lt;p&gt;C++20 加入了 Ranges，C++23又补充了一堆东西。理论上 Ranges 解耦了迭代和计算的逻辑，抽象出「范围」的概念，使得相比于旧的 Algorithm 库，Range 库中的算法更容易被组合，可以写出更清晰、优雅、美观、运行效率更高的代码。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Rust调用ios私有API</title>

@@ -6,14 +6,14 @@
     <description>Recent content on KK</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 23 Oct 2024 21:16:04 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 24 Nov 2024 13:12:21 +0800</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>碎碎念</title>
       <link>/ss/</link>
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       <guid>/ss/</guid>
-      <description>&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;2024-11-05T10:24:04+08:00&lt;/p&gt;&#xA;&lt;p&gt;崩不住了，这世界真是太离谱了，姜萍事件刚结束，又蹦出来个 “最强15岁初中生：用开源项目赚到了数百万、超7年开发经验的全栈工程师、出任CTO”，看了看实际上就是调一堆api做了个缝合怪网站，同类项目一大堆，毫无技术含量，甚至好像还是有团队运营炒作的，也能被吹上天。&lt;/p&gt;</description>
+      <description>&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;2024-11-24T12:23:07+08:00&lt;/p&gt;&#xA;&lt;p&gt;抽烟真的是最便宜，见效最快的缓解压力的方式&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;2024-11-15T15:26:07+08:00&lt;/p&gt;&#xA;&lt;p&gt;最近半个月帮一些学生写作业赚了一万多，不知道他们都怎么考上的某些qs排名前20的大学，只能说有点意思。&lt;/p&gt;</description>
     </item>
     <item>
       <title>友接</title>
@@ -30,11 +30,18 @@
       <description>&lt;p&gt;在这个由代码编织的虚拟世界之中，吾名KK，逐字节征服逻辑的黑客，编程语言的宗师，无往不利的代码战士。在无尽的数据流中穿梭，以键盘为剑，以屏幕为盾，守护着数字王国的安宁。现在，让你见识一下，我掌控代码之海的能力！&lt;/p&gt;</description>
     </item>
     <item>
-      <title>KK的独立开发日记（长期更新）</title>
-      <link>/post/kk_dev1/</link>
-      <pubDate>Mon, 21 Oct 2024 10:47:42 +0800</pubDate>
-      <guid>/post/kk_dev1/</guid>
-      <description>&lt;p&gt;NopX 的开发记录。&lt;/p&gt;</description>
+      <title>双城之战2 吐槽</title>
+      <link>/post/lol_as2/</link>
+      <pubDate>Sun, 24 Nov 2024 13:12:21 +0800</pubDate>
+      <guid>/post/lol_as2/</guid>
+      <description>&lt;p&gt;金克丝成为下城人民偶像的背后，隐藏的着多少人的努力落空啊。范德尔和希尔科用一生追求的目标，是底城的独立与自由。蔚、凯特琳、杰斯、维克托等人也都在试图弥合上下城的裂隙，而金克丝的行为完全是为了自己的感受，为了宣泄自己的不满。在下城这个充满压迫与苦难的地方，更多的人们已经不相信所谓的大义了，他们需要的是一场发泄，是对上下层体制的破坏，金克丝的行为刚好满足了这种需求，她的英雄地位是底层居民们情绪的放大，她那一炮毁掉了希尔科的努力，也彻底撕开了底城与上城虚伪的和平假象，她被命运推上舞台，成为了双城真正开战的导火索。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>c&#43;&#43;23 吐槽</title>
+      <link>/post/cpp23_ranges/</link>
+      <pubDate>Sun, 24 Nov 2024 12:08:21 +0800</pubDate>
+      <guid>/post/cpp23_ranges/</guid>
+      <description>&lt;p&gt;C++20 加入了 Ranges，C++23又补充了一堆东西。理论上 Ranges 解耦了迭代和计算的逻辑，抽象出「范围」的概念，使得相比于旧的 Algorithm 库，Range 库中的算法更容易被组合，可以写出更清晰、优雅、美观、运行效率更高的代码。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Rust调用ios私有API</title>
