@@ -6,28 +6,35 @@
     <description>Recent content in 吐槽 on KK</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 30 Nov 2024 18:31:21 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 09 Dec 2024 17:28:17 +0800</lastBuildDate>
     <atom:link href="/tags/%E5%90%90%E6%A7%BD/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rust 吐槽</title>
+      <link>/post/fuckrust/</link>
+      <pubDate>Mon, 09 Dec 2024 17:28:17 +0800</pubDate>
+      <guid>/post/fuckrust/</guid>
+      <description>&lt;p&gt;此文章可能引起不适，如果有 Rust 小鬼路过千万千万千万不要试图进来。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>狗草的网易雷火，司马东西</title>
       <link>/post/fuckleihuo/</link>
       <pubDate>Sat, 30 Nov 2024 18:31:21 +0800</pubDate>
       <guid>/post/fuckleihuo/</guid>
-      <description>&lt;p&gt;今天闲着，才想起来炉石国服回归了，结果上线一看，我卡组怎么都不全了？？？我是几乎只玩贼的，就算把其它职业的卡全拆的一干二净也不可能拆贼一张卡，感情很深，之前27连胜的卡组，一看卡丢了好几张，之前用这套卡组还发了动态，仔细一翻可不是几张，至少没了几十张卡，煞笔客服根本没有用，网上一看遇到类似情况的多了去了，煞笔网易当看不到。&lt;/p&gt;</description>
+      <description>&lt;p&gt;此文可能引起不适，网易雷火的狗千万别点进来&lt;/p&gt;</description>
     </item>
     <item>
       <title>双城之战2 吐槽</title>
       <link>/post/lol_as2/</link>
       <pubDate>Sun, 24 Nov 2024 13:12:21 +0800</pubDate>
       <guid>/post/lol_as2/</guid>
-      <description>&lt;p&gt;金克丝成为下城人民偶像的背后，隐藏的着多少人的努力落空啊。范德尔和希尔科用一生追求的目标，是底城的独立与自由。蔚、凯特琳、杰斯、维克托等人也都在试图弥合上下城的裂隙，而金克丝的行为完全是为了自己的感受，为了宣泄自己的不满。在下城这个充满压迫与苦难的地方，更多的人们已经不相信所谓的大义了，他们需要的是一场发泄，是对上下层体制的破坏，金克丝的行为刚好满足了这种需求，她的英雄地位是底层居民们情绪的放大，她那一炮毁掉了希尔科的努力，也彻底撕开了底城与上城虚伪的和平假象，她被命运推上舞台，成为了双城真正开战的导火索。&lt;/p&gt;</description>
+      <description>&lt;p&gt;此文可能引起不适，上城废物/导演养的狗/双城吹子 千万别点进来&lt;/p&gt;</description>
     </item>
     <item>
       <title>c&#43;&#43;23 吐槽</title>
       <link>/post/cpp23_ranges/</link>
       <pubDate>Sun, 24 Nov 2024 12:08:21 +0800</pubDate>
       <guid>/post/cpp23_ranges/</guid>
-      <description>&lt;p&gt;C++20 加入了 Ranges，C++23又补充了一堆东西。理论上 Ranges 解耦了迭代和计算的逻辑，抽象出「范围」的概念，使得相比于旧的 Algorithm 库，Range 库中的算法更容易被组合，可以写出更清晰、优雅、美观、运行效率更高的代码。&lt;/p&gt;</description>
+      <description>&lt;p&gt;此文章可能引起不适，如果有路过的只写过 C++ 的脑残傻逼别点进来。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

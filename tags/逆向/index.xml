@@ -27,7 +27,7 @@
       <link>/post/pointersearch1/</link>
       <pubDate>Tue, 27 Jun 2023 10:43:52 +0800</pubDate>
       <guid>/post/pointersearch1/</guid>
-      <description>&lt;h1 id=&#34;什么是指针搜索&#34;&gt;什么是指针搜索？&lt;/h1&gt;&#xA;&lt;p&gt;在这无尽的数字深渊中，吾是探寻者，吾名KK，内存的支配者，数据的操纵者。在寂静的虚空中，我听见了那二进制的低语，它们在呼唤我，渴求着与我融合。&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;什么是指针搜索&#34;&gt;什么是指针搜索&lt;/h1&gt;&#xA;&lt;p&gt;ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
