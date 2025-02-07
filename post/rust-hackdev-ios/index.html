@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.142.0 with theme even" />
+<meta name="generator" content="Hugo 0.143.0 with theme even" />
 
 
 <link rel="canonical" href="/post/rust-hackdev-ios/" />
@@ -184,8 +184,7 @@
 <h1 id="方法1">方法1</h1>
 <p>从越狱的ios设备中提取 <code>SpringBoardServices.tbd</code> 文件，也可以在网上找别人提取过的，也可以自己对着 <code>SpringBoardServices</code> 二进制文件符号表手写（。</p>
 <blockquote>
-<p>tbd 全称是 <code>text-based stub libraries</code> 用于记录链接动态库的必要信息，包括动态库导出的符号、架构信息、依赖信息、链接路径等。</p>
-</blockquote>
+<p>tbd 全称是 <code>text-based stub libraries</code> 用于记录链接动态库的必要信息，包括动态库导出的符号、架构信息、依赖信息、链接路径等。</p></blockquote>
 <p>放在 <code>PrivateFrameworks/SpringBoardServices.framework</code> 文件夹中。</p>
 <p>在 <code>build.rs</code> 中加入:</p>
 <div class="highlight"><div class="chroma">
@@ -245,8 +244,7 @@
 </div><h1 id="方法2">方法2</h1>
 <p>使用 <code>dlopen、dlsym</code> 动态加载符号</p>
 <blockquote>
-<p>dlopen 以指定模式打开指定的动态链接库文件，并返回一个句柄给 dlsym，dlsym 根据动态链接库操作句柄与符号，返回符号对应的地址</p>
-</blockquote>
+<p>dlopen 以指定模式打开指定的动态链接库文件，并返回一个句柄给 dlsym，dlsym 根据动态链接库操作句柄与符号，返回符号对应的地址</p></blockquote>
 <p>这里偷懒使用 <a href="https://github.com/nagisa/rust_libloading">https://github.com/nagisa/rust_libloading</a> 库，它做了一层使用起来比较方便并且安全的包装。</p>
 <p>例如:</p>
 <div class="highlight"><div class="chroma">
