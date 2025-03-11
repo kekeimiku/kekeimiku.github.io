@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>编写一个通用指针搜索器（1） - KK</title>
@@ -24,10 +24,10 @@
 
 
 
-<meta name="generator" content="Hugo 0.143.0 with theme even" />
+<meta name="generator" content="Hugo 0.145.0 with theme even" />
 
 
-<link rel="canonical" href="/post/pointersearch1/" />
+<link rel="canonical" href="//localhost:1313/post/pointersearch1/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -40,7 +40,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:url" content="/post/pointersearch1/">
+<meta property="og:url" content="//localhost:1313/post/pointersearch1/">
   <meta property="og:site_name" content="KK">
   <meta property="og:title" content="编写一个通用指针搜索器（1）">
   <meta property="og:description" content="什么是指针搜索 ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。">
@@ -57,7 +57,7 @@
   <meta itemprop="description" content="什么是指针搜索 ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。">
   <meta itemprop="datePublished" content="2023-06-27T10:43:52+08:00">
   <meta itemprop="dateModified" content="2023-06-27T10:43:52+08:00">
-  <meta itemprop="wordCount" content="3213">
+  <meta itemprop="wordCount" content="3201">
   <meta itemprop="keywords" content="逆向,内存,Rust">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="编写一个通用指针搜索器（1）">
@@ -163,7 +163,7 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 3213 字 </span>
+          <span class="more-meta"> 约 3201 字 </span>
           <span class="more-meta"> 预计阅读 7 分钟 </span>
         
       </div>
@@ -175,6 +175,7 @@
     <nav id="TableOfContents">
   <ul>
     <li><a href="#什么是指针搜索">什么是指针搜索</a></li>
+    <li><a href="#内存映射">内存映射</a></li>
     <li><a href="#内存扫描">内存扫描</a></li>
     <li><a href="#指针扫描">指针扫描</a></li>
   </ul>
@@ -186,9 +187,17 @@
 <p>ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。</p>
 <p>指针搜索通常被用于自动化寻找较为复杂的指针链，对于很简单的指针链，只需要调试器就可以找到了。当然，指针搜索经常也适用于那些无法使用调试器的场景。</p>
 <p>指针链一般通常被表示为：<code>[[[[[Main+0xdf18] +0x190] +0xc8] +0xc8] ...]</code> 类似的东西。<code>Main</code> 表示静态模块（程序自身和自身加载的动态库）。</p>
-<p>在 <a href="https://github.com/kekeimiku/PointerSearcher-X">PointerSearch-X</a> 中表示为 <code>Main+57112@400@200@200...</code>。</p>
+<p>在 <a href="https://github.com/kekeimiku/PointerSearcher-X">PointerSearch-X</a> 中表示为 <code>Main+df18-&gt;190-&gt;c8-&gt;c8...</code>。</p>
 <p>以下文章将讲解如何非常粗暴的实现指针搜索。</p>
 <p>以下的代码 <code>完全不考虑性能和设计模式</code> 因为性能优化/设计模式的种类有太多，毕竟一千个人眼中有一千个哈姆雷特，这篇文章的目标是简单，实现目标为主。</p>
+<blockquote>
+<p>扫描所有内存，寻找表示指针且实际上指向有效内存的值。
+然后把它们都放在索引Map中。
+然后从目标地址开始，并查询地址和地址最大偏移范围内的所有指针值。
+然后，对于每个结果，递归重复，直到达到最大深度，或者找到一个存在于“静态”内存中的指针。</p></blockquote>
+<h1 id="内存映射">内存映射</h1>
+<p>懒得去网上复制关于虚拟内存的八股文了，我也记不住，当然对这篇文章来说也没什么卵用，不如直接看代码，下面内存映射信息以最为清晰简单的 <code>linux</code> 为例，在linux中获取一个程序的内存映射非常简单，基本只是读取 <code>/proc/pid/maps</code>。</p>
+<p>先编写一个64位测试程序，这个程序运行时，我们每按一次回车value就会减1，并且打印出地址。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -223,66 +232,40 @@
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">&gt;</span><span class="w"> </span><span class="err">扫描所有内存，寻找表示指针且实际上指向有效内存的值。</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">&gt;</span><span class="w"> </span><span class="err">然后把它们都放在索引</span><span class="n">Map中</span><span class="err">。</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">&gt;</span><span class="w"> </span><span class="err">然后从目标地址开始，并查询地址和地址最大偏移范围内的所有指针值。</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">&gt;</span><span class="w"> </span><span class="err">然后，对于每个结果，递归重复，直到达到最大深度，或者找到一个存在于“静态”内存中的指针。</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">io</span>::<span class="p">{</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">Read</span><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1"># 内存映射
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="err">懒得去网上复制关于虚拟内存的八股文了，我也记不住，当然对这篇文章来说也没什么卵用，不如直接看代码，下面内存映射信息以最为清晰简单的</span><span class="w"> </span><span class="o">`</span><span class="n">linux</span><span class="o">`</span><span class="w"> </span><span class="err">为例，在</span><span class="n">linux中获取一个程序的内存映射非常简单</span><span class="err">，基本只是读取</span><span class="w"> </span><span class="o">`/</span><span class="n">proc</span><span class="o">/</span><span class="n">pid</span><span class="o">/</span><span class="n">maps</span><span class="o">`</span><span class="err">。</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#[derive(Default)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">struct</span> <span class="nc">App</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ptr</span>: <span class="nb">Box</span><span class="o">&lt;</span><span class="no">BB</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="err">先编写一个</span><span class="mi">64</span><span class="err">位测试程序，这个程序运行时，我们每按一次回车</span><span class="n">value就会减1</span><span class="err">，并且打印出地址。</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">struct</span> <span class="nc">BB</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">tmp</span>: <span class="kt">i64</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">value</span>: <span class="nb">Box</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">```</span><span class="n">rust</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">io</span><span class="p">::</span><span class="err">{</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">Read</span><span class="err">}</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="nb">Default</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="no">BB</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">fn</span> <span class="nf">default</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="bp">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">tmp</span>: <span class="mi">1</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">value</span>: <span class="nb">Box</span>::<span class="n">new</span><span class="p">(</span><span class="mi">99999_</span><span class="k">i32</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">#[derive(Default)]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">struct</span><span class="w"> </span><span class="n">App</span><span class="w"> </span><span class="err">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ptr</span><span class="p">:</span><span class="w"> </span><span class="n">Box</span><span class="o">&lt;</span><span class="n">BB</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="err">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">App</span>::<span class="n">default</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">struct</span><span class="w"> </span><span class="n">BB</span><span class="w"> </span><span class="err">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">tmp</span><span class="p">:</span><span class="w"> </span><span class="n">i64</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">value</span><span class="p">:</span><span class="w"> </span><span class="n">Box</span><span class="o">&lt;</span><span class="n">i32</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="err">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">impl</span><span class="w"> </span><span class="k">Default</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">BB</span><span class="w"> </span><span class="err">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">fn</span><span class="w"> </span><span class="k">default</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Self</span><span class="w"> </span><span class="err">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Self</span><span class="w"> </span><span class="err">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">tmp</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">value</span><span class="p">:</span><span class="w"> </span><span class="n">Box</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">99999</span><span class="n">_i32</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="err">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="err">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">let</span><span class="w"> </span><span class="n">mut</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">App</span><span class="p">::</span><span class="k">default</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">loop</span><span class="w"> </span><span class="err">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">let</span><span class="w"> </span><span class="n">mut</span><span class="w"> </span><span class="n">stdin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io</span><span class="p">::</span><span class="nf">stdin</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">stdin</span><span class="p">.</span><span class="k">read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mut</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">5</span><span class="p">]).</span><span class="nf">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">stdin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io</span>::<span class="n">stdin</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">stdin</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">5</span><span class="p">]).</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="o">*</span><span class="n">num</span><span class="p">.</span><span class="n">ptr</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s2">&#34;value: {}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">num</span><span class="p">.</span><span class="n">ptr</span><span class="p">.</span><span class="n">value</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s2">&#34;{:p}-&gt;{:p}-&gt;{:p}&#34;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">,</span><span class="w"> </span><span class="n">num</span><span class="p">.</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">num</span><span class="p">.</span><span class="n">ptr</span><span class="p">.</span><span class="n">value</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="err">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;value: </span><span class="si">{}</span><span class="s">&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">num</span><span class="p">.</span><span class="n">ptr</span><span class="p">.</span><span class="n">value</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;</span><span class="si">{:p}</span><span class="s">-&gt;</span><span class="si">{:p}</span><span class="s">-&gt;</span><span class="si">{:p}</span><span class="s">&#34;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">,</span><span class="w"> </span><span class="n">num</span><span class="p">.</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">num</span><span class="p">.</span><span class="n">ptr</span><span class="p">.</span><span class="n">value</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>它的 maps 类似于这样</p>
@@ -939,9 +922,9 @@
           <a href="/tags/rust/">Rust</a>
           </div>
       <nav class="post-nav">
-        <a class="prev" href="/post/apple-soc-inject/">
+        <a class="prev" href="/post/lazy_static_my/">
             <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">macOS M2 dylib注入器</span>
+            <span class="prev-text nav-default">lazy_static! { static ref My }</span>
             <span class="prev-text nav-mobile">上一篇</span>
           </a>
         <a class="next" href="/post/goasm1/">

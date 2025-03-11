@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>KK</title>
@@ -23,12 +23,12 @@
 
 
 
-<meta name="generator" content="Hugo 0.143.0 with theme even" />
+<meta name="generator" content="Hugo 0.145.0 with theme even" />
 
 
-<link rel="canonical" href="/" />
-  <link href="/index.xml" rel="alternate" type="application/rss+xml" title="KK" />
-  <link href="/index.xml" rel="feed" type="application/rss+xml" title="KK" />
+<link rel="canonical" href="//localhost:1313/" />
+  <link href="//localhost:1313/index.xml" rel="alternate" type="application/rss+xml" title="KK" />
+  <link href="//localhost:1313/index.xml" rel="feed" type="application/rss+xml" title="KK" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -41,7 +41,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:url" content="/">
+<meta property="og:url" content="//localhost:1313/">
   <meta property="og:site_name" content="KK">
   <meta property="og:title" content="KK">
   <meta property="og:locale" content="en">
@@ -316,7 +316,7 @@
       <div class="post-category">
           <a href="/categories/%E7%94%9F%E6%B4%BB/"> 生活 </a>
           </div>
-        <span class="more-meta"> 约 1394 字 </span>
+        <span class="more-meta"> 约 1365 字 </span>
         <span class="more-meta"> 预计阅读 3 分钟 </span>
     </div>
   </header>
@@ -333,40 +333,13 @@
 
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/apple-soc-inject/">macOS M2 dylib注入器</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-06-29 </span>
-      <div class="post-category">
-          <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
-          </div>
-        <span class="more-meta"> 约 455 字 </span>
-        <span class="more-meta"> 预计阅读 1 分钟 </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>在互联网找了很多相关的工具，可惜基本全都推荐用frida，其它的似乎没有一个能用的，除了不支持就是注入后程序崩溃，其中包括但不限于：</p>
-<p><a href="https://github.com/scen/osxinj">https://github.com/scen/osxinj</a></p>
-<p><a href="https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc">https://gist.github.com/vocaeq/fbac63d5d36bc6e1d6d99df9c92f75dc</a></p>
-<p>&hellip;</p>
-<p>但是frida我从来没有用过，感觉又脏又重，似乎还要依赖 <code>ptrace</code>，并且看到其它人基于它编写的工具都动不动几十MB。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/apple-soc-inject/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/pointersearch1/">编写一个通用指针搜索器（1）</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-06-27 </span>
       <div class="post-category">
           <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
           </div>
-        <span class="more-meta"> 约 3213 字 </span>
+        <span class="more-meta"> 约 3201 字 </span>
         <span class="more-meta"> 预计阅读 7 分钟 </span>
     </div>
   </header>
@@ -382,14 +355,65 @@
   </div>
 </article>
 
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/goasm1/">Go-Rust 编译器优化对比</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-06-26 </span>
+      <div class="post-category">
+          <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+          </div>
+        <span class="more-meta"> 约 1018 字 </span>
+        <span class="more-meta"> 预计阅读 3 分钟 </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <h1 id="go">Go</h1>
+<p>release模式 编译为x86-64</p>
+<p>我不知道Go除了使用 <code>go build file.go</code> 是否还有其它命令才能真正编译为release模式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">setBit1</span><span class="p">(</span><span class="nx">reg</span> <span class="o">*</span><span class="kt">uint32</span><span class="p">,</span> <span class="nx">value</span> <span class="kt">uint16</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">15</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">bitToSet</span> <span class="o">:=</span> <span class="p">((</span><span class="nx">value</span> <span class="o">&gt;&gt;</span> <span class="nx">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">		<span class="o">*</span><span class="nx">reg</span> <span class="o">&amp;=</span> <span class="p">^(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">bitToSet</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="o">*</span><span class="nx">reg</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="o">*</span><span class="nx">reg</span> <span class="o">&amp;=</span> <span class="p">^(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>它生成的汇编是什么样的呢？</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/goasm1/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
     </section>
   
   <nav class="pagination">
     
-    <a class="next" href="/page/2/">
-        <span class="next-text">下一页</span>
-        <i class="iconfont icon-right"></i>
-      </a>
+    
   </nav>
         </div>
         
