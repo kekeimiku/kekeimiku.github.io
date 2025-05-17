@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.145.0 with theme even" />
+<meta name="generator" content="Hugo 0.147.3 with theme even" />
 
 
 <link rel="canonical" href="//localhost:1313/" />
@@ -48,8 +48,8 @@
   <meta property="og:type" content="website">
 
   <meta itemprop="name" content="KK">
-  <meta itemprop="datePublished" content="2024-12-09T17:28:17+08:00">
-  <meta itemprop="dateModified" content="2024-12-09T17:28:17+08:00">
+  <meta itemprop="datePublished" content="2025-05-16T14:52:16+08:00">
+  <meta itemprop="dateModified" content="2025-05-16T14:52:16+08:00">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="KK">
 
@@ -144,6 +144,30 @@
       <div class="content-wrapper">
         <div id="content" class="content">
           <section id="posts" class="posts">
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/ios_dev1/">LuckySpeeder-解</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2025-05-16 </span>
+      <div class="post-category">
+          <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+          </div>
+        <span class="more-meta"> 约 3243 字 </span>
+        <span class="more-meta"> 预计阅读 7 分钟 </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。</p>
+<p>这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑,UI层级设计等各种乱七八糟的知识。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/ios_dev1/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
     <article class="post">
   <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/fuckrust/">Rust 吐槽</a></h1>
@@ -355,65 +379,14 @@
   </div>
 </article>
 
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/goasm1/">Go-Rust 编译器优化对比</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-06-26 </span>
-      <div class="post-category">
-          <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
-          </div>
-        <span class="more-meta"> 约 1018 字 </span>
-        <span class="more-meta"> 预计阅读 3 分钟 </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <h1 id="go">Go</h1>
-<p>release模式 编译为x86-64</p>
-<p>我不知道Go除了使用 <code>go build file.go</code> 是否还有其它命令才能真正编译为release模式</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">setBit1</span><span class="p">(</span><span class="nx">reg</span> <span class="o">*</span><span class="kt">uint32</span><span class="p">,</span> <span class="nx">value</span> <span class="kt">uint16</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">15</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="nx">bitToSet</span> <span class="o">:=</span> <span class="p">((</span><span class="nx">value</span> <span class="o">&gt;&gt;</span> <span class="nx">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
-</span></span><span class="line"><span class="cl">		<span class="o">*</span><span class="nx">reg</span> <span class="o">&amp;=</span> <span class="p">^(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">bitToSet</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">			<span class="o">*</span><span class="nx">reg</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">			<span class="o">*</span><span class="nx">reg</span> <span class="o">&amp;=</span> <span class="p">^(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">		<span class="p">}</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>它生成的汇编是什么样的呢？</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/goasm1/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
     </section>
   
   <nav class="pagination">
     
-    
+    <a class="next" href="/page/2/">
+        <span class="next-text">下一页</span>
+        <i class="iconfont icon-right"></i>
+      </a>
   </nav>
         </div>
         

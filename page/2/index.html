@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.143.1 with theme even" />
+<meta name="generator" content="Hugo 0.147.3 with theme even" />
 
 
 <link rel="canonical" href="//localhost:1313/" />
@@ -48,8 +48,8 @@
   <meta property="og:type" content="website">
 
   <meta itemprop="name" content="KK">
-  <meta itemprop="datePublished" content="2025-02-27T20:19:46+08:00">
-  <meta itemprop="dateModified" content="2025-02-27T20:19:46+08:00">
+  <meta itemprop="datePublished" content="2025-05-16T14:52:16+08:00">
+  <meta itemprop="dateModified" content="2025-05-16T14:52:16+08:00">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="KK">
 
@@ -146,30 +146,6 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/pointersearch1/">编写一个通用指针搜索器（1）</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-06-27 </span>
-      <div class="post-category">
-          <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
-          </div>
-        <span class="more-meta"> 约 3201 字 </span>
-        <span class="more-meta"> 预计阅读 7 分钟 </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <h1 id="什么是指针搜索">什么是指针搜索</h1>
-<p>ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/pointersearch1/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/goasm1/">Go-Rust 编译器优化对比</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-06-26 </span>
@@ -218,6 +194,31 @@
     </div>
     <div class="read-more">
       <a href="/post/goasm1/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/nat_hole_punching/"></a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 0001-01-01 </span>
+      
+        <span class="more-meta"> 约 2509 字 </span>
+        <span class="more-meta"> 预计阅读 6 分钟 </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <h1 id="nat-种类">NAT 种类</h1>
+<blockquote>
+<p>NAT有4个类型，它们分别是：NAT1、NAT2、NAT3、NAT4。从 NAT1 至 NAT4 限制越来越多。</p></blockquote>
+<h2 id="nat1-完全圆锥形natfull-cone-nat">NAT1 完全圆锥形NAT（Full Cone NAT）</h2>
+<p>完全圆锥型NAT把一个来自内部IP地址和端口的所有请求，始终映射到相同的外网IP地址和端口；同时，任意外部主机向该映射的外网IP地址和端口发送报文，都可以实现和内网主机进行通信，就像一个向外开口的圆锥形一样，故得名。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/nat_hole_punching/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
