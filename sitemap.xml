@@ -1,239 +1,239 @@
-<?xml-stylesheet type="text/xsl" href="//localhost:1313/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>//localhost:1313/ss/</loc>
+    <loc>/ss/</loc>
     <lastmod>2017-08-28T21:41:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/link/</loc>
+    <loc>/link/</loc>
     <lastmod>2017-08-28T21:41:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/about/</loc>
+    <loc>/about/</loc>
     <lastmod>2017-08-28T21:41:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/c/</loc>
+    <loc>/tags/c/</loc>
     <lastmod>2025-05-16T14:52:16+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/categories/</loc>
+    <loc>/categories/</loc>
     <lastmod>2025-05-16T14:52:16+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/</loc>
+    <loc>/</loc>
     <lastmod>2025-05-16T14:52:16+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/ios_dev1/</loc>
+    <loc>/post/ios_dev1/</loc>
     <lastmod>2025-05-16T14:52:16+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/objective-c/</loc>
+    <loc>/tags/objective-c/</loc>
     <lastmod>2025-05-16T14:52:16+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/</loc>
+    <loc>/post/</loc>
     <lastmod>2025-05-16T14:52:16+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/</loc>
+    <loc>/tags/</loc>
     <lastmod>2025-05-16T14:52:16+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/categories/%E7%BC%96%E7%A8%8B/</loc>
+    <loc>/categories/%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2025-05-16T14:52:16+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/rust/</loc>
+    <loc>/tags/rust/</loc>
     <lastmod>2024-12-09T17:28:17+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/fuckrust/</loc>
+    <loc>/post/fuckrust/</loc>
     <lastmod>2024-12-09T17:28:17+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/%E7%BC%96%E7%A8%8B/</loc>
+    <loc>/tags/%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2024-12-09T17:28:17+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/categories/%E5%90%90%E6%A7%BD/</loc>
+    <loc>/categories/%E5%90%90%E6%A7%BD/</loc>
     <lastmod>2024-12-09T17:28:17+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/%E5%90%90%E6%A7%BD/</loc>
+    <loc>/tags/%E5%90%90%E6%A7%BD/</loc>
     <lastmod>2024-12-09T17:28:17+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/fuckleihuo/</loc>
+    <loc>/post/fuckleihuo/</loc>
     <lastmod>2024-11-30T18:31:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/%E6%B8%B8%E6%88%8F/</loc>
+    <loc>/tags/%E6%B8%B8%E6%88%8F/</loc>
     <lastmod>2024-11-30T18:31:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/lol_as2/</loc>
+    <loc>/post/lol_as2/</loc>
     <lastmod>2024-11-24T13:12:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/c&#43;&#43;/</loc>
+    <loc>/tags/c&#43;&#43;/</loc>
     <lastmod>2024-11-24T12:08:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/cpp23_ranges/</loc>
+    <loc>/post/cpp23_ranges/</loc>
     <lastmod>2024-11-24T12:08:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/rust-hackdev-ios/</loc>
+    <loc>/post/rust-hackdev-ios/</loc>
     <lastmod>2024-10-21T04:10:43+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/x86/</loc>
+    <loc>/tags/x86/</loc>
     <lastmod>2024-09-14T15:53:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/%E5%86%85%E5%AD%98/</loc>
+    <loc>/tags/%E5%86%85%E5%AD%98/</loc>
     <lastmod>2024-09-14T15:53:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/%E9%80%86%E5%90%91/</loc>
+    <loc>/tags/%E9%80%86%E5%90%91/</loc>
     <lastmod>2024-09-14T15:53:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/bpaddr/</loc>
+    <loc>/post/bpaddr/</loc>
     <lastmod>2024-09-14T15:53:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/pointersearch2/</loc>
+    <loc>/post/pointersearch2/</loc>
     <lastmod>2024-01-19T22:30:11+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/lazy_static_my/</loc>
+    <loc>/post/lazy_static_my/</loc>
     <lastmod>2023-09-06T19:39:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/categories/%E7%94%9F%E6%B4%BB/</loc>
+    <loc>/categories/%E7%94%9F%E6%B4%BB/</loc>
     <lastmod>2023-09-06T19:39:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/%E7%94%9F%E6%B4%BB/</loc>
+    <loc>/tags/%E7%94%9F%E6%B4%BB/</loc>
     <lastmod>2023-09-06T19:39:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/pointersearch1/</loc>
+    <loc>/post/pointersearch1/</loc>
     <lastmod>2023-06-27T10:43:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/tags/go/</loc>
+    <loc>/tags/go/</loc>
     <lastmod>2023-06-26T10:46:46+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/goasm1/</loc>
+    <loc>/post/goasm1/</loc>
     <lastmod>2023-06-26T10:46:46+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>//localhost:1313/post/nat_hole_punching/</loc>
+    <loc>/post/nat_hole_punching/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

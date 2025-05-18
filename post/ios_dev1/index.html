@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>LuckySpeeder-解 - KK</title>
@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="kk" /><meta name="description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
-这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑,UI层级设计等各种乱七八糟的知识。
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。
 " />
 
 
@@ -28,7 +28,7 @@
 <meta name="generator" content="Hugo 0.147.3 with theme even" />
 
 
-<link rel="canonical" href="//localhost:1313/post/ios_dev1/" />
+<link rel="canonical" href="/post/ios_dev1/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -41,11 +41,11 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:url" content="//localhost:1313/post/ios_dev1/">
+<meta property="og:url" content="/post/ios_dev1/">
   <meta property="og:site_name" content="KK">
   <meta property="og:title" content="LuckySpeeder-解">
   <meta property="og:description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
-这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑,UI层级设计等各种乱七八糟的知识。">
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
@@ -56,7 +56,7 @@
 
   <meta itemprop="name" content="LuckySpeeder-解">
   <meta itemprop="description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
-这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑,UI层级设计等各种乱七八糟的知识。">
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。">
   <meta itemprop="datePublished" content="2025-05-16T14:52:16+08:00">
   <meta itemprop="dateModified" content="2025-05-16T14:52:16+08:00">
   <meta itemprop="wordCount" content="3243">
@@ -64,7 +64,7 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="LuckySpeeder-解">
   <meta name="twitter:description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
-这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑,UI层级设计等各种乱七八糟的知识。">
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。">
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -199,7 +199,7 @@
 </div>
     <div class="post-content">
       <p>这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。</p>
-<p>这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑,UI层级设计等各种乱七八糟的知识。</p>
+<p>这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。</p>
 <h1 id="1-让程序执行我们的代码">1. 让程序执行我们的代码</h1>
 <p>Mach-O文件由一个模块化结构，由多个 Load Commands 组成，用来描述程序的各种结构，比如段、节、依赖的动态库等。</p>
 <p>其中动态库导入表用于告诉程序运行时需要加载哪些动态库。</p>

@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>内存 on KK</title>
-    <link>//localhost:1313/tags/%E5%86%85%E5%AD%98/</link>
+    <link>/tags/%E5%86%85%E5%AD%98/</link>
     <description>Recent content in 内存 on KK</description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Sat, 14 Sep 2024 15:53:21 +0800</lastBuildDate>
-    <atom:link href="//localhost:1313/tags/%E5%86%85%E5%AD%98/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/%E5%86%85%E5%AD%98/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>是什么(写入/访问)了这个地址</title>
-      <link>//localhost:1313/post/bpaddr/</link>
+      <link>/post/bpaddr/</link>
       <pubDate>Sat, 14 Sep 2024 15:53:21 +0800</pubDate>
-      <guid>//localhost:1313/post/bpaddr/</guid>
+      <guid>/post/bpaddr/</guid>
       <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;&#xA;&lt;p&gt;这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。&lt;/p&gt;</description>
     </item>
     <item>
       <title>编写一个通用指针搜索器（2）</title>
-      <link>//localhost:1313/post/pointersearch2/</link>
+      <link>/post/pointersearch2/</link>
       <pubDate>Fri, 19 Jan 2024 22:30:11 +0800</pubDate>
-      <guid>//localhost:1313/post/pointersearch2/</guid>
+      <guid>/post/pointersearch2/</guid>
       <description>&lt;p&gt;！！！注意，这篇文章中提到的性能优化方式基本仅适用于指针链扫描，不适用其它业务。&lt;/p&gt;&#xA;&lt;p&gt;！！！这篇文章并不是接着上一篇文章写的，但有很多关联，不过很多代码，逻辑，已经发生变化。&lt;/p&gt;</description>
     </item>
     <item>
       <title>编写一个通用指针搜索器（1）</title>
-      <link>//localhost:1313/post/pointersearch1/</link>
+      <link>/post/pointersearch1/</link>
       <pubDate>Tue, 27 Jun 2023 10:43:52 +0800</pubDate>
-      <guid>//localhost:1313/post/pointersearch1/</guid>
+      <guid>/post/pointersearch1/</guid>
       <description>&lt;h1 id=&#34;什么是指针搜索&#34;&gt;什么是指针搜索&lt;/h1&gt;&#xA;&lt;p&gt;ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。&lt;/p&gt;</description>
     </item>
   </channel>
