@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>LuckySpeeder-解 - KK</title>
@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="kk" /><meta name="description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
-这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。
 " />
 
 
@@ -25,10 +25,10 @@
 
 
 
-<meta name="generator" content="Hugo 0.147.6 with theme even" />
+<meta name="generator" content="Hugo 0.150.1 with theme even" />
 
 
-<link rel="canonical" href="/post/ios_dev1/" />
+<link rel="canonical" href="//localhost:1313/post/lucky_speeder_notes/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -37,15 +37,15 @@
 
 
 
-<link href="/sass/main.min.ed4efc672368b45f1a18d94f19f127c7c297a9669f27285456f317eaf4fb0a4b.css" rel="stylesheet">
+<link href="/sass/main.min.00826cbb2b00d8d7f1fb7493923f4dc2010755f770182cd56f1c1f8d98b593be.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:url" content="/post/ios_dev1/">
+<meta property="og:url" content="//localhost:1313/post/lucky_speeder_notes/">
   <meta property="og:site_name" content="KK">
   <meta property="og:title" content="LuckySpeeder-解">
   <meta property="og:description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
-这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。">
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
@@ -56,15 +56,15 @@
 
   <meta itemprop="name" content="LuckySpeeder-解">
   <meta itemprop="description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
-这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。">
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。">
   <meta itemprop="datePublished" content="2025-05-16T14:52:16+08:00">
   <meta itemprop="dateModified" content="2025-05-16T14:52:16+08:00">
-  <meta itemprop="wordCount" content="3243">
+  <meta itemprop="wordCount" content="3901">
   <meta itemprop="keywords" content="Objective-C,C">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="LuckySpeeder-解">
   <meta name="twitter:description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
-这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。">
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。">
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -166,8 +166,8 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 3243 字 </span>
-          <span class="more-meta"> 预计阅读 7 分钟 </span>
+          <span class="more-meta"> 约 3901 字 </span>
+          <span class="more-meta"> 预计阅读 8 分钟 </span>
         
       </div>
     </header>
@@ -199,7 +199,7 @@
 </div>
     <div class="post-content">
       <p>这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。</p>
-<p>这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、链接器、内存、UI渲染逻辑、UI层级设计等各种乱七八糟的知识。</p>
+<p>这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。</p>
 <h1 id="1-让程序执行我们的代码">1. 让程序执行我们的代码</h1>
 <p>Mach-O文件由一个模块化结构，由多个 Load Commands 组成，用来描述程序的各种结构，比如段、节、依赖的动态库等。</p>
 <p>其中动态库导入表用于告诉程序运行时需要加载哪些动态库。</p>
@@ -370,7 +370,7 @@
 <p>基于重绑定符号表的 Hook (可调用原始函数，但目标函数必须存在于系统库中)</p>
 </li>
 <li>
-<p>基于硬件断点的 Hook (不可调用原始函数，但是什么都能hook)</p>
+<p>基于硬件断点的 Hook (不可调用原始函数，但是什么都能hook并且数量有限制)</p>
 </li>
 <li>
 <p>OC运行时 Hook (只能hook OC，例如上述绘制UI时调整层级就使用了这种技术)</p>
@@ -399,7 +399,161 @@
 </span></span><span class="line"><span class="cl"><span class="nf">rebind_symbols</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rebindings</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="2-unity-hook">2. Unity Hook</h2>
+</div><p>例外情况：</p>
+<p>重绑定符号表的 Hook 可能无效，例如某些 APP 中不知是什么原因，hook <code>clock_gettime</code> 成功但是没有效果，具体原因我没有调查</p>
+<p>我这里直接使用 <code>基于硬件断点的 Hook</code> 解决这个问题，实际上它有点类似于编写了一个简单的调试器</p>
+<p>核心代码实现：</p>
+<ol>
+<li>获取当前的异常处理端口</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">task_get_exception_ports</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">EXC_MASK_BREAKPOINT</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="n">masks</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">port_count</span><span class="p">,</span> <span class="n">current_ports</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="n">behaviors</span><span class="p">,</span> <span class="n">flavors</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>分配一个新的Mach端口用于接收异常</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">mach_port_allocate</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">MACH_PORT_RIGHT_RECEIVE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">server</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_port_insert_right</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">server</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">MACH_MSG_TYPE_MAKE_SEND</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>将断点异常重定向到我们的端口</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">task_set_exception_ports</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">EXC_MASK_BREAKPOINT</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="n">server</span><span class="p">,</span> <span class="n">EXCEPTION_STATE</span> <span class="o">|</span> <span class="n">MACH_EXCEPTION_CODES</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="n">ARM_THREAD_STATE64</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="4">
+<li>在后台堵塞等待异常处理任务</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">exception_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">unused</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mach_msg_server</span><span class="p">(</span><span class="n">mach_exc_server</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">union</span> <span class="n">__RequestUnion__catch_mach_exc_subsystem</span><span class="p">),</span> <span class="n">server</span><span class="p">,</span> <span class="n">MACH_MSG_OPTION_NONE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="kr">thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">exception_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="5">
+<li>设置断点</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">arm_debug_state64_t</span> <span class="n">state</span> <span class="o">=</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl"><span class="n">state</span><span class="p">.</span><span class="n">__bvr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">addr</span><span class="p">;</span>   <span class="c1">// 断点地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">state</span><span class="p">.</span><span class="n">__bcr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x1e5</span><span class="p">;</span>  <span class="c1">// 启用断点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">task_set_state</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">ARM_DEBUG_STATE64</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">state</span><span class="p">,</span> <span class="n">ARM_DEBUG_STATE64_COUNT</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="6">
+<li>断点触发后系统会调用 <code>catch_mach_exception_raise_state</code> 函数，我们在里面可以修改线程状态</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">hooks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">old</span> <span class="o">==</span> <span class="nf">arm_thread_state64_get_pc</span><span class="p">(</span><span class="o">*</span><span class="n">old</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">new</span> <span class="o">=</span> <span class="o">*</span><span class="n">old</span><span class="p">;</span>                                         <span class="c1">// 复制线程状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="o">*</span><span class="n">new_stateCnt</span> <span class="o">=</span> <span class="n">old_stateCnt</span><span class="p">;</span>                        
+</span></span><span class="line"><span class="cl">    <span class="nf">arm_thread_state64_set_pc_fptr</span><span class="p">(</span><span class="o">*</span><span class="n">new</span><span class="p">,</span> <span class="n">hooks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">new</span><span class="p">);</span> <span class="c1">// 重定向PC
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">KERN_SUCCESS</span><span class="p">;</span>  <span class="c1">// 返回成功告诉内核继续执行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>整个hook流程为：</p>
+<ul>
+<li>
+<p>程序执行到某个地址</p>
+</li>
+<li>
+<p>CPU检查PC是否匹配硬件断点</p>
+</li>
+<li>
+<p>匹配则生成EXC_BREAKPOINT异常</p>
+</li>
+<li>
+<p>内核查找异常处理端口配置</p>
+</li>
+<li>
+<p>发现我们设置的server端口</p>
+</li>
+<li>
+<p>封装异常信息为Mach消息发送到server端口</p>
+</li>
+<li>
+<p>exception_handler线程的mach_msg_server接收消息</p>
+</li>
+<li>
+<p>mach_exc_server根据EXCEPTION_STATE标志选择处理函数</p>
+</li>
+<li>
+<p>调用catch_mach_exception_raise_state</p>
+</li>
+<li>
+<p>检查hook表，重定向PC到我们的函数</p>
+</li>
+<li>
+<p>返回KERN_SUCCESS</p>
+</li>
+<li>
+<p>将new_state中的寄存器状态恢复到CPU</p>
+</li>
+<li>
+<p>现在PC指向我们的hook函数而不是原函数</p>
+</li>
+<li>
+<p>内核恢复执行，但执行的是我们的代码</p>
+</li>
+</ul>
+<p>具体代码实现 <a href="https://github.com/kekeimiku/LuckySpeeder/blob/main/hwbphook.c">https://github.com/kekeimiku/LuckySpeeder/blob/main/hwbphook.c</a></p>
+<h2 id="2-unity-hook">2. Unity Hook</h2>
 <p>较新版本 Unity 开发的程序，渲染逻辑是每帧驱动的，而不是纯粹由<code>时间推进</code>。</p>
 <p>这种比较复杂，仅仅hook系统时间通常没什么用，不过Unity引擎通常由 <code>set_timeScale</code> 来控制整体动画速度，所以我们只需要hook并调用这个函数就可以了。</p>
 <p>当然 <code>set_timeScale</code> 并不在系统函数中，所以无法使用&quot;传统&quot;基于重绑定符号表的Hook，不过我们可以利用 <code>UnityFramework</code> 自身的符号绑定机制进行hook。</p>
