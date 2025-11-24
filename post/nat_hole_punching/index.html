@@ -25,7 +25,7 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 
 
 
-<meta name="generator" content="Hugo 0.152.2 with theme even" />
+<meta name="generator" content="Hugo 0.154.3 with theme even" />
 
 
 <link rel="canonical" href="/post/nat_hole_punching/" />
@@ -157,14 +157,14 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
       <div class="post-meta">
         <span class="post-time"> 0001-01-01 </span>
         
-          <span class="more-meta"> 约 2509 字 </span>
-          <span class="more-meta"> 预计阅读 6 分钟 </span>
+          <span class="more-meta"> 2509 words </span>
+          <span class="more-meta"> 6 mins read </span>
         
       </div>
     </header>
 
     <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">文章目录</h2>
+  <h2 class="post-toc-title">Contents</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
   <ul>
@@ -292,16 +292,16 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">sync</span>::<span class="n">Arc</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">stun</span>::<span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">stun</span>::<span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">agent</span>::<span class="n">TransactionId</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">client</span>::<span class="n">ClientBuilder</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">message</span>::<span class="p">{</span><span class="no">BINDING_REQUEST</span><span class="p">,</span><span class="w"> </span><span class="n">Getter</span><span class="p">,</span><span class="w"> </span><span class="n">Message</span><span class="p">},</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">xoraddr</span>::<span class="n">XorMappedAddress</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">};</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">tokio</span>::<span class="n">net</span>::<span class="n">UdpSocket</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">tokio</span>::<span class="n">net</span>::<span class="n">UdpSocket</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#[tokio::main]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span>::<span class="n">error</span>::<span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[tokio::main]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span>::<span class="n">error</span>::<span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">UdpSocket</span>::<span class="n">bind</span><span class="p">(</span><span class="s">&#34;0.0.0.0:0&#34;</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#34;stun.miwifi.com:3478&#34;</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="p">;</span><span class="w">
@@ -321,7 +321,7 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;</span><span class="si">{}</span><span class="s">:</span><span class="si">{}</span><span class="s">&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">xor_addr</span><span class="p">.</span><span class="n">ip</span><span class="p">,</span><span class="w"> </span><span class="n">xor_addr</span><span class="p">.</span><span class="n">port</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>连接到对端:</p>
@@ -341,7 +341,7 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">socket</span><span class="p">.</span><span class="n">recv_from</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">socket</span><span class="p">.</span><span class="n">recv_from</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="nat4-打洞">NAT4 打洞</h3>
@@ -396,7 +396,7 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[tokio::main]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span>::<span class="n">error</span>::<span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span>::<span class="n">error</span>::<span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UdpSocket</span>::<span class="n">bind</span><span class="p">(</span><span class="s">&#34;0.0.0.0:7899&#34;</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">clients</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">Mutex</span>::<span class="n">new</span><span class="p">(</span><span class="nb">Vec</span>::<span class="n">new</span><span class="p">()));</span><span class="w">
@@ -424,7 +424,7 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">clients</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="nat1-nat1-的-demo">NAT1-NAT1 的 Demo</h3>
@@ -551,28 +551,28 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">net</span>::<span class="n">SocketAddr</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sync</span>::<span class="n">Arc</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">time</span>::<span class="p">{</span><span class="n">Duration</span><span class="p">,</span><span class="w"> </span><span class="n">Instant</span><span class="p">},</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">tokio</span>::<span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">tokio</span>::<span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">io</span>::<span class="p">{</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">AsyncBufReadExt</span><span class="p">,</span><span class="w"> </span><span class="n">BufReader</span><span class="p">},</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">net</span>::<span class="n">UdpSocket</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sync</span>::<span class="n">Mutex</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">struct</span> <span class="nc">Peer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Peer</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">addr</span>: <span class="nc">SocketAddr</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">last_heartbeat</span>: <span class="nc">Instant</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">stun</span>::<span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">stun</span>::<span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">agent</span>::<span class="n">TransactionId</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">client</span>::<span class="n">ClientBuilder</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">message</span>::<span class="p">{</span><span class="no">BINDING_REQUEST</span><span class="p">,</span><span class="w"> </span><span class="n">Getter</span><span class="p">,</span><span class="w"> </span><span class="n">Message</span><span class="p">},</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">xoraddr</span>::<span class="n">XorMappedAddress</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#[tokio::main]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span>::<span class="n">error</span>::<span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[tokio::main]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span>::<span class="n">error</span>::<span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">UdpSocket</span>::<span class="n">bind</span><span class="p">(</span><span class="s">&#34;0.0.0.0:0&#34;</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#34;stun.miwifi.com:3478&#34;</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="p">;</span><span class="w">
@@ -660,7 +660,7 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div>
@@ -668,11 +668,11 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 
     <div class="post-copyright">
   <p class="copyright-item">
-    <span class="item-title">文章作者</span>
+    <span class="item-title">Author</span>
     <span class="item-content"></span>
   </p>
   <p class="copyright-item">
-    <span class="item-title">上次更新</span>
+    <span class="item-title">LastMod</span>
     <span class="item-content">
         0001-01-01
         
@@ -687,7 +687,7 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
         <a class="prev" href="/post/goasm1/">
             <i class="iconfont icon-left"></i>
             <span class="prev-text nav-default">Go-Rust 编译器优化对比</span>
-            <span class="prev-text nav-mobile">上一篇</span>
+            <span class="prev-text nav-mobile">Prev</span>
           </a>
         
       </nav>
@@ -712,11 +712,11 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
 
 <div class="copyright">
   <span class="power-by">
-    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
   </span>
   <span class="division">|</span>
   <span class="theme-info">
-    主题 - 
+    Theme - 
     <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
   </span>
 
@@ -725,7 +725,7 @@ NAT1 完全圆锥形NAT（Full Cone NAT） 完全圆锥型NAT把一个来自内�
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+    2026<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
   </span>
 </div>
 

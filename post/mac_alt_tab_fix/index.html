@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="kk" /><meta name="description" content="众所周知 macOS 默认的 Alt/Command&#43;Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。
-虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
+虽然有很多第三方软件能解决这个问题，但它们通常是自行实现了切换器，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
 我预期的行为是 Alt/Command&#43;Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command&#43;Tab 切换 APP 会切换到其它工作区以及 &ldquo;无事发生&rdquo; 的行为。
 系统版本: macOS 26.1 (25B78)
 这篇文章记录修改过程。
@@ -31,7 +31,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.152.2 with theme even" />
+<meta name="generator" content="Hugo 0.154.3 with theme even" />
 
 
 <link rel="canonical" href="/post/mac_alt_tab_fix/" />
@@ -51,7 +51,7 @@
   <meta property="og:site_name" content="KK">
   <meta property="og:title" content="逆向修改 macOS Alt&#43;Tab 行为 && 编写沙箱注入器">
   <meta property="og:description" content="众所周知 macOS 默认的 Alt/Command&#43;Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。
-虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
+虽然有很多第三方软件能解决这个问题，但它们通常是自行实现了切换器，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
 我预期的行为是 Alt/Command&#43;Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command&#43;Tab 切换 APP 会切换到其它工作区以及 “无事发生” 的行为。
 系统版本: macOS 26.1 (25B78)
 这篇文章记录修改过程。
@@ -71,7 +71,7 @@
 
   <meta itemprop="name" content="逆向修改 macOS Alt&#43;Tab 行为 && 编写沙箱注入器">
   <meta itemprop="description" content="众所周知 macOS 默认的 Alt/Command&#43;Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。
-虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
+虽然有很多第三方软件能解决这个问题，但它们通常是自行实现了切换器，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
 我预期的行为是 Alt/Command&#43;Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command&#43;Tab 切换 APP 会切换到其它工作区以及 “无事发生” 的行为。
 系统版本: macOS 26.1 (25B78)
 这篇文章记录修改过程。
@@ -80,12 +80,12 @@
 各工作区独立管理自己的 App 切换列表，不会再跳到其他工作区。">
   <meta itemprop="datePublished" content="2025-11-23T13:15:11+08:00">
   <meta itemprop="dateModified" content="2025-11-23T13:15:11+08:00">
-  <meta itemprop="wordCount" content="2360">
+  <meta itemprop="wordCount" content="2998">
   <meta itemprop="keywords" content="逆向,内存,ARM64e,C,Assembly">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="逆向修改 macOS Alt&#43;Tab 行为 && 编写沙箱注入器">
   <meta name="twitter:description" content="众所周知 macOS 默认的 Alt/Command&#43;Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。
-虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
+虽然有很多第三方软件能解决这个问题，但它们通常是自行实现了切换器，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
 我预期的行为是 Alt/Command&#43;Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command&#43;Tab 切换 APP 会切换到其它工作区以及 “无事发生” 的行为。
 系统版本: macOS 26.1 (25B78)
 这篇文章记录修改过程。
@@ -193,14 +193,14 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 2360 字 </span>
-          <span class="more-meta"> 预计阅读 5 分钟 </span>
+          <span class="more-meta"> 2998 words </span>
+          <span class="more-meta"> 6 mins read </span>
         
       </div>
     </header>
 
     <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">文章目录</h2>
+  <h2 class="post-toc-title">Contents</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
   <ul>
@@ -223,7 +223,7 @@
 </div>
     <div class="post-content">
       <p>众所周知 macOS 默认的 Alt/Command+Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。</p>
-<p>虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。</p>
+<p>虽然有很多第三方软件能解决这个问题，但它们通常是自行实现了切换器，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。</p>
 <p>我预期的行为是 Alt/Command+Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command+Tab 切换 APP 会切换到其它工作区以及 &ldquo;无事发生&rdquo; 的行为。</p>
 <p>系统版本: macOS 26.1 (25B78)</p>
 <p>这篇文章记录修改过程。</p>
@@ -251,8 +251,8 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ipsw class-dump --headers <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -o DockHeaders <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock
+</span></span></span><span class="line"><span class="cl">    -o DockHeaders <span class="se">\
+</span></span></span><span class="line"><span class="cl">    /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>随便搜索一下关键词 <code>switch</code> 发现 <code>ASAppSwitcher</code> 接口，定义如下</p>
@@ -333,7 +333,7 @@
 </span></span><span class="line"><span class="cl">    <span class="n">Ivar</span> <span class="n">processesIvar</span> <span class="o">=</span> <span class="n">class_getInstanceVariable</span><span class="p">([</span><span class="nb">self</span> <span class="k">class</span><span class="p">],</span> <span class="s">&#34;_processes&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">processes</span> <span class="o">=</span> <span class="n">object_getIvar</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">processesIvar</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// TODO
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">orig_show</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">_cmd</span><span class="p">,</span> <span class="n">show</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">orig_show</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">_cmd</span><span class="p">,</span> <span class="n">show</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">Class</span> <span class="n">cls</span> <span class="o">=</span> <span class="n">objc_getClass</span><span class="p">(</span><span class="s">&#34;ASAppSwitcher&#34;</span><span class="p">);</span>  
@@ -398,13 +398,13 @@
 </span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="n">NSUInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="o">*</span><span class="n">process</span> <span class="o">=</span> <span class="p">[</span><span class="n">processes</span> <span class="nl">objectAtIndex</span><span class="p">:</span><span class="n">i</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// PSN is at offset 16 in __NSCFType
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">bytes</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">process</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">bytes</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">process</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="n">ProcessSerialNumber</span> <span class="o">*</span><span class="n">psn</span> <span class="o">=</span> <span class="p">(</span><span class="n">ProcessSerialNumber</span> <span class="o">*</span><span class="p">)(</span><span class="n">bytes</span> <span class="o">+</span> <span class="mi">16</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">    <span class="n">pid_t</span> <span class="n">pid</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="n">OSStatus</span> <span class="n">err</span> <span class="o">=</span> <span class="n">GetProcessPID</span><span class="p">(</span><span class="n">psn</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pid</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// TODO
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>获取当前屏幕上的所有窗口</p>
@@ -498,6 +498,571 @@
 <p>构造 <code>loader.s</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="na">.section</span> <span class="no">__DATA</span><span class="p">,</span> <span class="no">__data</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 全局标签，用于计算偏移
+</span></span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___shellcode_start</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___shellcode_end</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___patch_pthread_create</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___patch_sandbox_consume</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___patch_dlopen</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___patch_dlerror</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___patch_payload_path</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___patch_sandbox_token_read</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___patch_sandbox_token_exec</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">___patch_error_buffer</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">___shellcode_start:</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">sub</span> <span class="no">sp</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x30
+</span></span></span><span class="line"><span class="cl">	<span class="nf">stp</span> <span class="no">x29</span><span class="p">,</span> <span class="no">x30</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20]
+</span></span></span><span class="line"><span class="cl">	<span class="nf">add</span> <span class="no">x29</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">stur</span> <span class="no">w0</span><span class="p">,</span> <span class="p">[</span><span class="no">x29</span><span class="p">,</span> <span class="c1">#-0x4]
+</span></span></span><span class="line"><span class="cl">	<span class="nf">str</span>  <span class="no">x1</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x10]
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">add</span>    <span class="no">x0</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x8
+</span></span></span><span class="line"><span class="cl">	<span class="nf">mov</span>    <span class="no">x8</span><span class="p">,</span> <span class="c1">#0
+</span></span></span><span class="line"><span class="cl">	<span class="nf">str</span>    <span class="no">x8</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x8]
+</span></span></span><span class="line"><span class="cl">	<span class="nf">mov</span>    <span class="no">x1</span><span class="p">,</span> <span class="no">x8</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">adr</span>    <span class="no">x2</span><span class="p">,</span> <span class="no">__thread_entry</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">paciza</span> <span class="no">x2</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">mov</span>    <span class="no">x3</span><span class="p">,</span> <span class="no">x8</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">___patch_pthread_create</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">blr</span> <span class="no">x9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">movz</span> <span class="no">x0</span><span class="p">,</span> <span class="c1">#0x4e45
+</span></span></span><span class="line"><span class="cl">	<span class="nf">movk</span> <span class="no">x0</span><span class="p">,</span> <span class="c1">#0x444f, lsl #16
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 无限循环等待，主程序读取 x0 寄存器判断 shellcode 是否执行完成
+</span></span></span><span class="line"><span class="cl">	<span class="nf">b</span> <span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">4</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">__thread_entry:</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">pacibsp</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">sub</span> <span class="no">sp</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x30
+</span></span></span><span class="line"><span class="cl">	<span class="nf">stp</span> <span class="no">x29</span><span class="p">,</span> <span class="no">x30</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20]
+</span></span></span><span class="line"><span class="cl">	<span class="nf">add</span> <span class="no">x29</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">stur</span> <span class="no">w0</span><span class="p">,</span> <span class="p">[</span><span class="no">x29</span><span class="p">,</span> <span class="c1">#-0x4]
+</span></span></span><span class="line"><span class="cl">	<span class="nf">str</span>  <span class="no">x1</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x10]
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">___patch_sandbox_consume</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 检查并消费 read token
+</span></span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x0</span><span class="p">,</span> <span class="no">___patch_sandbox_token_read</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x0</span><span class="p">,</span> <span class="p">[</span><span class="no">x0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">cbz</span> <span class="no">x0</span><span class="p">,</span> <span class="mi">1</span><span class="no">f</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">blr</span> <span class="no">x9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">1:</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 检查并消费 exec token
+</span></span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x0</span><span class="p">,</span> <span class="no">___patch_sandbox_token_exec</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x0</span><span class="p">,</span> <span class="p">[</span><span class="no">x0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">cbz</span> <span class="no">x0</span><span class="p">,</span> <span class="mi">2</span><span class="no">f</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">blr</span> <span class="no">x9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">2:</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 调用 dlopen 加载 dylib
+</span></span></span><span class="line"><span class="cl">	<span class="nf">mov</span> <span class="no">x1</span><span class="p">,</span> <span class="c1">#1
+</span></span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x0</span><span class="p">,</span> <span class="no">___patch_payload_path</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x0</span><span class="p">,</span> <span class="p">[</span><span class="no">x0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">___patch_dlopen</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">blr</span> <span class="no">x9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 保存 dlopen 返回值到错误缓冲区
+</span></span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">___patch_error_buffer</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">str</span> <span class="no">x0</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 如果 dlopen 成功则跳过错误处理
+</span></span></span><span class="line"><span class="cl">	<span class="nf">cbnz</span> <span class="no">x0</span><span class="p">,</span> <span class="mi">3</span><span class="no">f</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// dlopen 失败，调用 dlerror 获取错误信息
+</span></span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">___patch_dlerror</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">blr</span> <span class="no">x9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 保存 dlerror 返回的字符串指针
+</span></span></span><span class="line"><span class="cl">	<span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">___patch_error_buffer</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">str</span> <span class="no">x0</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">,</span> <span class="c1">#8]
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">3:</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">movz</span> <span class="no">x0</span><span class="p">,</span> <span class="c1">#0x4e45
+</span></span></span><span class="line"><span class="cl">	<span class="nf">movk</span> <span class="no">x0</span><span class="p">,</span> <span class="c1">#0x444f, lsl #16
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">b</span> <span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">___patch_pthread_create:</span>
+</span></span><span class="line"><span class="cl">	<span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">___patch_sandbox_consume:</span>
+</span></span><span class="line"><span class="cl">	<span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">___patch_dlopen:</span>
+</span></span><span class="line"><span class="cl">	<span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">___patch_dlerror:</span>
+</span></span><span class="line"><span class="cl">	<span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">___patch_payload_path:</span>
+</span></span><span class="line"><span class="cl">	<span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">___patch_sandbox_token_read:</span>
+</span></span><span class="line"><span class="cl">	<span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">___patch_sandbox_token_exec:</span>
+</span></span><span class="line"><span class="cl">	<span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">___patch_error_buffer:</span>
+</span></span><span class="line"><span class="cl">	<span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">___shellcode_end:</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>引入标签计算偏移</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__shellcode_start</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__shellcode_end</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__patch_pthread_create</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__patch_sandbox_consume</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__patch_dlopen</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__patch_dlerror</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__patch_payload_path</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__patch_sandbox_token_read</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__patch_sandbox_token_exec</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">__patch_error_buffer</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">SHELLCODE</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">__shellcode_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">SHELLCODE_SIZE</span> <span class="o">=</span> <span class="n">__shellcode_end</span> <span class="o">-</span> <span class="n">__shellcode_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">PTHREAD_CREATE</span> <span class="o">=</span> <span class="n">__patch_pthread_create</span> <span class="o">-</span> <span class="n">__shellcode_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">SANDBOX_CONSUME</span> <span class="o">=</span> <span class="n">__patch_sandbox_consume</span> <span class="o">-</span> <span class="n">__shellcode_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">DLOPEN</span> <span class="o">=</span> <span class="n">__patch_dlopen</span> <span class="o">-</span> <span class="n">__shellcode_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">DLERROR</span> <span class="o">=</span> <span class="n">__patch_dlerror</span> <span class="o">-</span> <span class="n">__shellcode_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">PAYLOAD_PATH</span> <span class="o">=</span> <span class="n">__patch_payload_path</span> <span class="o">-</span> <span class="n">__shellcode_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">ERROR_BUFFER</span> <span class="o">=</span> <span class="n">__patch_error_buffer</span> <span class="o">-</span> <span class="n">__shellcode_start</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>获取 Task Port</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">task_for_pid</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">pid</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">task</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>分配栈内存</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stack</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">,</span> <span class="n">VM_PROT_READ</span> <span class="o">|</span> <span class="n">VM_PROT_WRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">stack_contents</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>分配错误缓冲区和 dylib 路径内存</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 分配错误缓冲区用于接收 dlopen 和 dlerror 的返回值
+</span></span></span><span class="line"><span class="cl"><span class="kt">mach_vm_address_t</span> <span class="n">error_buffer_address</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">error_buffer_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">),</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">error_buffer_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">),</span> <span class="n">TRUE</span><span class="p">,</span> <span class="n">VM_PROT_READ</span> <span class="o">|</span> <span class="n">VM_PROT_WRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 分配内存存储 dylib 路径字符串
+</span></span></span><span class="line"><span class="cl"><span class="kt">mach_vm_address_t</span> <span class="n">payload_path_address</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">size_t</span> <span class="n">payload_path_len</span> <span class="o">=</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">payload_path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">payload_path_address</span><span class="p">,</span> <span class="n">payload_path_len</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">payload_path_address</span><span class="p">,</span> <span class="n">payload_path_len</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">,</span> <span class="n">VM_PROT_READ</span> <span class="o">|</span> <span class="n">VM_PROT_WRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">payload_path_address</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="n">payload_path</span><span class="p">,</span> <span class="n">payload_path_len</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>检查沙箱权限并签发相应的 token</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 检查进程是否需要文件读取权限
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sandbox_file_read_data</span> <span class="o">=</span> <span class="nf">sandbox_check</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="s">&#34;file-read-data&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">SANDBOX_FILTER_PATH</span> <span class="o">|</span> <span class="n">SANDBOX_CHECK_NO_REPORT</span><span class="p">,</span> <span class="n">payload_path</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="c1">// 检查进程是否需要文件执行权限
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sandbox_file_map_executable</span> <span class="o">=</span> <span class="nf">sandbox_check</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="s">&#34;file-map-executable&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">SANDBOX_FILTER_PATH</span> <span class="o">|</span> <span class="n">SANDBOX_CHECK_NO_REPORT</span><span class="p">,</span> <span class="n">payload_path</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">sandbox_file_read_data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 签发读取权限 token
+</span></span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="o">*</span><span class="n">token</span> <span class="o">=</span> <span class="nf">sandbox_extension_issue_file</span><span class="p">(</span><span class="n">APP_SANDBOX_READ</span><span class="p">,</span> <span class="n">payload_path</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 在目标进程中分配内存存储 token
+</span></span></span><span class="line"><span class="cl">    <span class="kt">mach_vm_address_t</span> <span class="n">token_address</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">size_t</span> <span class="n">token_len</span> <span class="o">=</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">token_address</span><span class="p">,</span> <span class="n">token_len</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mach_vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">token_address</span><span class="p">,</span> <span class="n">token_len</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">,</span> <span class="n">VM_PROT_READ</span> <span class="o">|</span> <span class="n">VM_PROT_WRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">token_address</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="n">token</span><span class="p">,</span> <span class="n">token_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 将 token 地址写入 shellcode
+</span></span></span><span class="line"><span class="cl">    <span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">SANDBOX_TOKEN_READ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">token_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">sandbox_file_map_executable</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 签发执行权限 token
+</span></span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="o">*</span><span class="n">token</span> <span class="o">=</span> <span class="nf">sandbox_extension_issue_file</span><span class="p">(</span><span class="n">APP_SANDBOX_EXECUTABLE</span><span class="p">,</span> <span class="n">payload_path</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="kt">mach_vm_address_t</span> <span class="n">token_address</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">size_t</span> <span class="n">token_len</span> <span class="o">=</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">token_address</span><span class="p">,</span> <span class="n">token_len</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mach_vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">token_address</span><span class="p">,</span> <span class="n">token_len</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">,</span> <span class="n">VM_PROT_READ</span> <span class="o">|</span> <span class="n">VM_PROT_WRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">token_address</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="n">token</span><span class="p">,</span> <span class="n">token_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 将 token 地址写入 shellcode
+</span></span></span><span class="line"><span class="cl">    <span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">SANDBOX_TOKEN_EXEC</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">token_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修补 shellcode</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 获取需要的函数地址并去除指针签名
+</span></span></span><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="n">pcfmt_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;pthread_create_from_mach_thread&#34;</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="n">dlopen_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;dlopen&#34;</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="n">dlerror_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;dlerror&#34;</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="n">sandbox_consume_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;sandbox_extension_consume&#34;</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 将函数地址和数据地址写入 shellcode
+</span></span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">PTHREAD_CREATE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pcfmt_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">DLOPEN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dlopen_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">DLERROR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dlerror_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">SANDBOX_CONSUME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sandbox_consume_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">ERROR_BUFFER</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">error_buffer_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">PAYLOAD_PATH</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">payload_path_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>写入 shellcode</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">code</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="n">SHELLCODE</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="n">VM_PROT_EXECUTE</span> <span class="o">|</span> <span class="n">VM_PROT_READ</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>设置线程状态并执行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 设置 PC（程序计数器）
+</span></span></span><span class="line"><span class="cl"><span class="nf">__darwin_arm_thread_state64_set_pc_fptr</span><span class="p">(</span><span class="n">thread_state</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="nf">ptrauth_sign_unauthenticated</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">code</span><span class="p">,</span> <span class="n">ptrauth_key_asia</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="c1">// 设置 SP（栈指针）
+</span></span></span><span class="line"><span class="cl"><span class="nf">__darwin_arm_thread_state64_set_sp</span><span class="p">(</span><span class="n">thread_state</span><span class="p">,</span> <span class="n">stack</span> <span class="o">+</span> <span class="p">(</span><span class="n">stack_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">thread_create</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="kr">thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">_thread_convert_thread_state</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">thread</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">thread_flavor</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">thread_state</span><span class="p">,</span> <span class="n">thread_flavor_count</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">machine_thread_state</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">machine_thread_flavor_count</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">thread_terminate</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">thread_create_running</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">thread_flavor</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">machine_thread_state</span><span class="p">,</span> <span class="n">machine_thread_flavor_count</span><span class="p">,</span> <span class="o">&amp;</span><span class="kr">thread</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>检查 <code>x0</code> 寄存器判断 shellcode 是否执行完成并处理错误</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
@@ -538,337 +1103,53 @@
 </span><span class="lnt">38
 </span><span class="lnt">39
 </span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span><span class="lnt">72
-</span><span class="lnt">73
-</span><span class="lnt">74
-</span><span class="lnt">75
-</span><span class="lnt">76
-</span><span class="lnt">77
-</span><span class="lnt">78
-</span><span class="lnt">79
-</span><span class="lnt">80
-</span><span class="lnt">81
-</span><span class="lnt">82
-</span><span class="lnt">83
-</span><span class="lnt">84
-</span><span class="lnt">85
-</span><span class="lnt">86
-</span><span class="lnt">87
-</span><span class="lnt">88
-</span><span class="lnt">89
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl">        <span class="c1">// 在可写区域创建，只是为了免一次copy
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="na">.section</span> <span class="no">__DATA</span><span class="p">,</span><span class="no">__data</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">usleep</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 全局标签，主要为了计算偏移填充数据
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="na">.global</span> <span class="no">_m_start</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_end</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_pthread_create_addr</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_sandbox_consume_addr</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_dlopen_addr</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_payload_path</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_sandbox_token</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">thread_get_state</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span> <span class="n">thread_flavor</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">thread_state</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">thread_flavor_count</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">thread_state</span><span class="p">.</span><span class="n">__x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x444f4e45</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// shellcode 执行完成，读取错误缓冲区
+</span></span></span><span class="line"><span class="cl">        <span class="kt">uintptr_t</span> <span class="n">error_buffer</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">size_t</span> <span class="n">maxSize</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">error_buffer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">vm_read_overwrite</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">error_buffer_address</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">            <span class="k">sizeof</span><span class="p">(</span><span class="n">error_buffer</span><span class="p">),</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="n">error_buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">maxSize</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// dlopen 失败，读取错误信息
+</span></span></span><span class="line"><span class="cl">            <span class="c1">// 先计算错误字符串长度
+</span></span></span><span class="line"><span class="cl">            <span class="kt">size_t</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">size_t</span> <span class="n">sz</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="nf">vm_read_overwrite</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">error_buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">len</span><span class="o">++</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                    <span class="k">sizeof</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sz</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">c</span> <span class="o">!=</span> <span class="sc">&#39;\0&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1">// 读取完整的错误信息
+</span></span></span><span class="line"><span class="cl">            <span class="kt">char</span> <span class="o">*</span><span class="n">error_msg</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">size_t</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">vm_read_overwrite</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">error_buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">len</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="n">error_msg</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sz</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;remote dlerror: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">free</span><span class="p">(</span><span class="n">error_msg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="nf">usleep</span><span class="p">(</span><span class="mi">20000</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// shellcode 开始地址，m_end - m_start 就可以获取大小
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nl">_m_start:</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">sub</span> <span class="no">sp</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x30
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">stp</span> <span class="no">x29</span><span class="p">,</span> <span class="no">x30</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">add</span> <span class="no">x29</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">        <span class="nf">stur</span> <span class="no">w0</span><span class="p">,</span> <span class="p">[</span><span class="no">x29</span><span class="p">,</span> <span class="c1">#-0x4]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">str</span> <span class="no">x1</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x10]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">        <span class="nf">add</span> <span class="no">x0</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x8
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">mov</span> <span class="no">x8</span><span class="p">,</span> <span class="c1">#0
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">str</span> <span class="no">x8</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x8]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">mov</span> <span class="no">x1</span><span class="p">,</span> <span class="no">x8</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x2</span><span class="p">,</span> <span class="no">m_thread_entry</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">paciza</span> <span class="no">x2</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">mov</span> <span class="no">x3</span><span class="p">,</span> <span class="no">x8</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">_m_pthread_create_addr</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">blr</span> <span class="no">x9</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 0x79616265 写入一个自定义的标识到 x0 寄存器
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">movz</span> <span class="no">x0</span><span class="p">,</span> <span class="c1">#0x6265
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">movk</span> <span class="no">x0</span><span class="p">,</span> <span class="c1">#0x7961, lsl #16
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// 无限循环等待，主程序只要读取 x0 寄存器，就可以知道 shellcode 已经执行到这里，可以执行其它操作了
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">b</span> <span class="p">.</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="na">.align</span> <span class="mi">4</span>
-</span></span><span class="line"><span class="cl"><span class="nl">m_thread_entry:</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">pacibsp</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">sub</span> <span class="no">sp</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x30
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">stp</span> <span class="no">x29</span><span class="p">,</span> <span class="no">x30</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">add</span> <span class="no">x29</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">        <span class="nf">stur</span> <span class="no">w0</span><span class="p">,</span> <span class="p">[</span><span class="no">x29</span><span class="p">,</span> <span class="c1">#-0x4]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">str</span> <span class="no">x1</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x10]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x0</span><span class="p">,</span> <span class="no">_m_sandbox_token</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">_m_sandbox_consume_addr</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">blr</span> <span class="no">x9</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="nf">mov</span> <span class="no">x1</span><span class="p">,</span> <span class="c1">#1
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">adr</span> <span class="no">x0</span><span class="p">,</span> <span class="no">_m_payload_path</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">_m_dlopen_addr</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">blr</span> <span class="no">x9</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="nf">ldp</span> <span class="no">x29</span><span class="p">,</span> <span class="no">x30</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">add</span> <span class="no">sp</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x30
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">retab</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="na">.align</span> <span class="mi">3</span>
-</span></span><span class="line"><span class="cl"><span class="nl">_m_pthread_create_addr:</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.quad</span> <span class="mi">0x0</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="na">.align</span> <span class="mi">3</span>
-</span></span><span class="line"><span class="cl"><span class="nl">_m_sandbox_consume_addr:</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.quad</span> <span class="mi">0x0</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="na">.align</span> <span class="mi">3</span>
-</span></span><span class="line"><span class="cl"><span class="nl">_m_dlopen_addr:</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.quad</span> <span class="mi">0x0</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// payload_path 限制 128 字节，大部分时候足够
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="na">.align</span> <span class="mi">3</span>
-</span></span><span class="line"><span class="cl"><span class="nl">_m_payload_path:</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.zero</span> <span class="mi">128</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// token 中包含 payload_path 所以长一点，限制 256 字节
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="na">.align</span> <span class="mi">3</span>
-</span></span><span class="line"><span class="cl"><span class="nl">_m_sandbox_token:</span>
-</span></span><span class="line"><span class="cl">        <span class="na">.zero</span> <span class="mi">256</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// shellcode 结束地址
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nl">_m_end:</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>引入标签计算偏移</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_start</span><span class="p">[];</span>
-</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_end</span><span class="p">[];</span>
-</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_pthread_create_addr</span><span class="p">[];</span>
-</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_sandbox_consume_addr</span><span class="p">[];</span>
-</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_dlopen_addr</span><span class="p">[];</span>
-</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_payload_path</span><span class="p">[];</span>
-</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_sandbox_token</span><span class="p">[];</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">SHELLCODE</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">m_start</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">SHELLCODE_SIZE</span> <span class="o">=</span> <span class="n">m_end</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">PTHREAD_CREATE</span> <span class="o">=</span> <span class="n">m_pthread_create_addr</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">SANDBOX_CONSUME</span> <span class="o">=</span> <span class="n">m_sandbox_consume_addr</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">DLOPEN</span> <span class="o">=</span> <span class="n">m_dlopen_addr</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">PAYLOAD_PATH</span> <span class="o">=</span> <span class="n">m_payload_path</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">SANDBOX_TOKEN</span> <span class="o">=</span> <span class="n">m_sandbox_token</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>获取 Task Port</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">task_for_pid</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">pid</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">task</span><span class="p">)</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>分配内存</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stack</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">stack_contents</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl"><span class="nf">vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">VM_PROT_READ</span> <span class="o">|</span> <span class="n">VM_PROT_WRITE</span><span class="p">)</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>签发沙箱 token</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">sandbox_token</span> <span class="o">=</span> <span class="nf">sandbox_extension_issue_file</span><span class="p">(</span><span class="n">APP_SANDBOX_READ</span><span class="p">,</span> <span class="n">payload_path</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>修补 shellcode</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="n">pcfmt_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;pthread_create_from_mach_thread&#34;</span><span class="p">),</span> 
-</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
-</span></span><span class="line"><span class="cl"><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="n">dlopen_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;dlopen&#34;</span><span class="p">),</span> 
-</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
-</span></span><span class="line"><span class="cl"><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="n">sandbox_consume_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;sandbox_extension_consume&#34;</span><span class="p">),</span> 
-</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
-</span></span><span class="line"><span class="cl"><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">PTHREAD_CREATE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pcfmt_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">SANDBOX_CONSUME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sandbox_consume_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">DLOPEN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dlopen_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">PAYLOAD_PATH</span><span class="p">,</span> <span class="n">payload_path</span><span class="p">,</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">payload_path</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">SANDBOX_TOKEN</span><span class="p">,</span> <span class="n">sandbox_token</span><span class="p">,</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">sandbox_token</span><span class="p">));</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>写入 shellcode</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">code</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="n">SHELLCODE</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="nf">vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">VM_PROT_EXECUTE</span> <span class="o">|</span> <span class="n">VM_PROT_READ</span><span class="p">)</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>设置线程状态并执行</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 设置 PC（程序计数器）
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">__darwin_arm_thread_state64_set_pc_fptr</span><span class="p">(</span><span class="n">thread_state</span><span class="p">,</span> <span class="nf">ptrauth_sign_unauthenticated</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">code</span><span class="p">,</span> <span class="n">ptrauth_key_asia</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">  
-</span></span><span class="line"><span class="cl"><span class="c1">// 设置 SP（栈指针）
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">__darwin_arm_thread_state64_set_sp</span><span class="p">(</span><span class="n">thread_state</span><span class="p">,</span> <span class="n">stack</span> <span class="o">+</span> <span class="p">(</span><span class="n">stack_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">thread_create</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="kr">thread</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="nf">thread_convert_thread_state</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">      <span class="kr">thread</span><span class="p">,</span> 
-</span></span><span class="line"><span class="cl">      <span class="mi">2</span><span class="p">,</span> 
-</span></span><span class="line"><span class="cl">      <span class="n">thread_flavor</span><span class="p">,</span> 
-</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">thread_state</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">      <span class="n">thread_flavor_count</span><span class="p">,</span> 
-</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">machine_thread_state</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">      <span class="o">&amp;</span><span class="n">machine_thread_flavor_count</span>
-</span></span><span class="line"><span class="cl">  <span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">thread_create_running</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">thread_flavor</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">machine_thread_state</span><span class="p">,</span> <span class="n">machine_thread_flavor_count</span><span class="p">,</span> <span class="o">&amp;</span><span class="kr">thread</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>检查 <code>x0</code> 寄存器判断 shellcode 是否执行完成</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">thread_get_state</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span> <span class="n">thread_flavor</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">thread_state</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">thread_flavor_count</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">thread_state</span><span class="p">.</span><span class="n">__x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x79616265</span><span class="p">)</span> <span class="c1">// 执行完成
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="c1">// 如果执行完成就直接杀死 shellcode 线程
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">thread_terminate</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 终止 shellcode 线程
+</span></span></span><span class="line"><span class="cl"><span class="nf">thread_terminate</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="享受">享受</h2>
-<p>当然还有很多改进的点，例如 <code>payload_path</code> 和 <code>token</code> 可以直接传一个指针而不是限定长度，这样可以缩小 shellcode 大小；在沙箱授权之前可以检查进程是否已经开启了沙箱,更为严谨，虽然即便没有开启沙箱但是添加了沙箱授权也不会有什么问题就是</p>
-<p>完整代码: 去我的 <a href="https://github.com/kekeimiku">Github</a> 中自己找吧，写这篇文章的时候还没有整合到单独仓库中 😁</p>
+<p>可改进的点：目前注入器并不完善，即便现在处理了沙箱，实际上也依然会受到 <code>file-map-executable</code> 以及 <code>library-validation</code> 限制，当然后者可以通过关闭 mfi 来解决，而前者需要实现一个 macho-o loader 直接将 dylib 转为 shellocode 在内存执行不能落地，说简单也简单说复杂也复杂，不过现在已经够用了以后再说吧。</p>
+<p>完整代码: 去我的 <a href="https://github.com/kekeimiku">Github</a> 中自己找吧，写这篇文章的时候还没有整合到单独仓库中 😁 而且本文目前提到的代码完全可以还原所有工作</p>
 <p>感谢:</p>
 <p><a href="https://github.com/koekeishiya">https://github.com/koekeishiya</a>
 <a href="https://github.com/jslegendre">https://github.com/jslegendre</a></p>
@@ -881,11 +1162,11 @@
 
     <div class="post-copyright">
   <p class="copyright-item">
-    <span class="item-title">文章作者</span>
+    <span class="item-title">Author</span>
     <span class="item-content">kk</span>
   </p>
   <p class="copyright-item">
-    <span class="item-title">上次更新</span>
+    <span class="item-title">LastMod</span>
     <span class="item-content">
         2025-11-23
         
@@ -906,7 +1187,7 @@
         
         <a class="next" href="/post/lucky_speeder_notes/">
             <span class="next-text nav-default">LuckySpeeder-解</span>
-            <span class="next-text nav-mobile">下一篇</span>
+            <span class="next-text nav-mobile">Next</span>
             <i class="iconfont icon-right"></i>
           </a>
       </nav>
@@ -931,11 +1212,11 @@
 
 <div class="copyright">
   <span class="power-by">
-    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
   </span>
   <span class="division">|</span>
   <span class="theme-info">
-    主题 - 
+    Theme - 
     <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
   </span>
 
@@ -944,7 +1225,7 @@
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+    2026<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
   </span>
 </div>
 

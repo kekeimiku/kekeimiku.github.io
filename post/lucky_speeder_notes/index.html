@@ -25,7 +25,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.152.2 with theme even" />
+<meta name="generator" content="Hugo 0.154.3 with theme even" />
 
 
 <link rel="canonical" href="/post/lucky_speeder_notes/" />
@@ -166,14 +166,14 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 3901 字 </span>
-          <span class="more-meta"> 预计阅读 8 分钟 </span>
+          <span class="more-meta"> 3901 words </span>
+          <span class="more-meta"> 8 mins read </span>
         
       </div>
     </header>
 
     <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">文章目录</h2>
+  <h2 class="post-toc-title">Contents</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
   <ul>
@@ -356,11 +356,11 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">isRunning</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">deltaTime</span> <span class="o">=</span> <span class="nf">GetTime</span><span class="p">()</span> <span class="o">-</span> <span class="n">lastTime</span><span class="p">;</span>   <span class="c1">// 获取自上次帧以来的时间差
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">lastTime</span> <span class="o">=</span> <span class="nf">GetTime</span><span class="p">();</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">lastTime</span> <span class="o">=</span> <span class="nf">GetTime</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="nf">updateLogic</span><span class="p">(</span><span class="n">deltaTime</span><span class="p">);</span>         <span class="c1">// 根据deltaTime推进逻辑
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">render</span><span class="p">();</span>                           <span class="c1">// 绘制画面
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></span><span class="line"><span class="cl">    <span class="nf">render</span><span class="p">();</span>                           <span class="c1">// 绘制画面
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>所以，如果我们能加快时间(比如让 1 秒看起来像 2 秒)，那么程序每帧获取到的 deltaTime 就变成 2 倍，所有程序逻辑都以更大的步长更新，看起来就像&quot;加速&quot;了，反之亦然。</p>
@@ -482,8 +482,8 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">arm_debug_state64_t</span> <span class="n">state</span> <span class="o">=</span> <span class="p">{};</span>
 </span></span><span class="line"><span class="cl"><span class="n">state</span><span class="p">.</span><span class="n">__bvr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">addr</span><span class="p">;</span>   <span class="c1">// 断点地址
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">state</span><span class="p">.</span><span class="n">__bcr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x1e5</span><span class="p">;</span>  <span class="c1">// 启用断点
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">task_set_state</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">ARM_DEBUG_STATE64</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">state</span><span class="p">,</span> <span class="n">ARM_DEBUG_STATE64_COUNT</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="n">state</span><span class="p">.</span><span class="n">__bcr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x1e5</span><span class="p">;</span>  <span class="c1">// 启用断点
+</span></span></span><span class="line"><span class="cl"><span class="nf">task_set_state</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">ARM_DEBUG_STATE64</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">state</span><span class="p">,</span> <span class="n">ARM_DEBUG_STATE64_COUNT</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ol start="6">
@@ -501,10 +501,10 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">hooks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">old</span> <span class="o">==</span> <span class="nf">arm_thread_state64_get_pc</span><span class="p">(</span><span class="o">*</span><span class="n">old</span><span class="p">))</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">new</span> <span class="o">=</span> <span class="o">*</span><span class="n">old</span><span class="p">;</span>                                         <span class="c1">// 复制线程状态
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="o">*</span><span class="n">new_stateCnt</span> <span class="o">=</span> <span class="n">old_stateCnt</span><span class="p">;</span>                        
+</span></span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">new_stateCnt</span> <span class="o">=</span> <span class="n">old_stateCnt</span><span class="p">;</span>                        
 </span></span><span class="line"><span class="cl">    <span class="nf">arm_thread_state64_set_pc_fptr</span><span class="p">(</span><span class="o">*</span><span class="n">new</span><span class="p">,</span> <span class="n">hooks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">new</span><span class="p">);</span> <span class="c1">// 重定向PC
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">KERN_SUCCESS</span><span class="p">;</span>  <span class="c1">// 返回成功告诉内核继续执行
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">KERN_SUCCESS</span><span class="p">;</span>  <span class="c1">// 返回成功告诉内核继续执行
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>整个hook流程为：</p>
@@ -892,11 +892,11 @@
 
     <div class="post-copyright">
   <p class="copyright-item">
-    <span class="item-title">文章作者</span>
+    <span class="item-title">Author</span>
     <span class="item-content">kk</span>
   </p>
   <p class="copyright-item">
-    <span class="item-title">上次更新</span>
+    <span class="item-title">LastMod</span>
     <span class="item-content">
         2025-05-16
         
@@ -914,11 +914,11 @@
         <a class="prev" href="/post/mac_alt_tab_fix/">
             <i class="iconfont icon-left"></i>
             <span class="prev-text nav-default">逆向修改 macOS Alt&#43;Tab 行为 &amp;&amp; 编写沙箱注入器</span>
-            <span class="prev-text nav-mobile">上一篇</span>
+            <span class="prev-text nav-mobile">Prev</span>
           </a>
         <a class="next" href="/post/fuckrust/">
             <span class="next-text nav-default">Rust 吐槽</span>
-            <span class="next-text nav-mobile">下一篇</span>
+            <span class="next-text nav-mobile">Next</span>
             <i class="iconfont icon-right"></i>
           </a>
       </nav>
@@ -943,11 +943,11 @@
 
 <div class="copyright">
   <span class="power-by">
-    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
   </span>
   <span class="division">|</span>
   <span class="theme-info">
-    主题 - 
+    Theme - 
     <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
   </span>
 
@@ -956,7 +956,7 @@
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+    2026<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
   </span>
 </div>
 

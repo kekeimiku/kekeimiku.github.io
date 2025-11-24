@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.152.2 with theme even" />
+<meta name="generator" content="Hugo 0.154.3 with theme even" />
 
 
 <link rel="canonical" href="/post/rust-hackdev-ios/" />
@@ -161,14 +161,14 @@
         <div class="post-category">
             <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
             </div>
-          <span class="more-meta"> 约 430 字 </span>
-          <span class="more-meta"> 预计阅读 1 分钟 </span>
+          <span class="more-meta"> 430 words </span>
+          <span class="more-meta"> 1 min read </span>
         
       </div>
     </header>
 
     <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">文章目录</h2>
+  <h2 class="post-toc-title">Contents</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
   <ul>
@@ -197,7 +197,7 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;cargo::rustc-link-search=framework=PrivateFrameworks&#34;</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>目录结构:</p>
@@ -234,12 +234,12 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[allow(non_snake_case)]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#[link(name = </span><span class="s">&#34;SpringBoardServices&#34;</span><span class="cp">, kind = </span><span class="s">&#34;framework&#34;</span><span class="cp">)]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">extern</span><span class="w"> </span><span class="s">&#34;C&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[link(name = </span><span class="s">&#34;SpringBoardServices&#34;</span><span class="cp">, kind = </span><span class="s">&#34;framework&#34;</span><span class="cp">)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">extern</span><span class="w"> </span><span class="s">&#34;C&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">fn</span> <span class="nf">SBSCopyDisplayIdentifierForProcessID</span><span class="p">(</span><span class="n">p1</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">CFStringRef</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">fn</span> <span class="nf">SBSCopyLocalizedApplicationNameForDisplayIdentifier</span><span class="p">(</span><span class="n">p1</span>: <span class="nc">CFStringRef</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">CFStringRef</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">fn</span> <span class="nf">SBSCopyIconImagePNGDataForDisplayIdentifier</span><span class="p">(</span><span class="n">p1</span>: <span class="nc">CFStringRef</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">CFDataRef</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h1 id="方法2">方法2</h1>
@@ -272,21 +272,21 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="kd">let</span><span class="w"> </span><span class="n">lib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Library</span>::<span class="n">new</span><span class="p">(</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices&#34;</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#[allow(non_snake_case)]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">SBSCopyDisplayIdentifierForProcessID</span>: <span class="nc">Symbol</span><span class="o">&lt;</span><span class="k">extern</span><span class="w"> </span><span class="s">&#34;C&#34;</span><span class="w"> </span><span class="k">fn</span><span class="p">(</span><span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">CFStringRef</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[allow(non_snake_case)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">let</span><span class="w"> </span><span class="n">SBSCopyDisplayIdentifierForProcessID</span>: <span class="nc">Symbol</span><span class="o">&lt;</span><span class="k">extern</span><span class="w"> </span><span class="s">&#34;C&#34;</span><span class="w"> </span><span class="k">fn</span><span class="p">(</span><span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">CFStringRef</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">lib</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="sa">b</span><span class="s">&#34;SBSCopyDisplayIdentifierForProcessID&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#[allow(non_snake_case)]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">SBSCopyLocalizedApplicationNameForDisplayIdentifier</span>: <span class="nc">Symbol</span><span class="o">&lt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[allow(non_snake_case)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">let</span><span class="w"> </span><span class="n">SBSCopyLocalizedApplicationNameForDisplayIdentifier</span>: <span class="nc">Symbol</span><span class="o">&lt;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">extern</span><span class="w"> </span><span class="s">&#34;C&#34;</span><span class="w"> </span><span class="k">fn</span><span class="p">(</span><span class="n">CFStringRef</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">CFStringRef</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lib</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="sa">b</span><span class="s">&#34;SBSCopyLocalizedApplicationNameForDisplayIdentifier&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lib</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="sa">b</span><span class="s">&#34;SBSCopyLocalizedApplicationNameForDisplayIdentifier&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#[allow(non_snake_case)]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">SBSCopyIconImagePNGDataForDisplayIdentifier</span>: <span class="nc">Symbol</span><span class="o">&lt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[allow(non_snake_case)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">let</span><span class="w"> </span><span class="n">SBSCopyIconImagePNGDataForDisplayIdentifier</span>: <span class="nc">Symbol</span><span class="o">&lt;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">extern</span><span class="w"> </span><span class="s">&#34;C&#34;</span><span class="w"> </span><span class="k">fn</span><span class="p">(</span><span class="n">CFStringRef</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">CFDataRef</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lib</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="sa">b</span><span class="s">&#34;SBSCopyIconImagePNGDataForDisplayIdentifier&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lib</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="sa">b</span><span class="s">&#34;SBSCopyIconImagePNGDataForDisplayIdentifier&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h1 id="区别">区别</h1>
@@ -296,11 +296,11 @@
 
     <div class="post-copyright">
   <p class="copyright-item">
-    <span class="item-title">文章作者</span>
+    <span class="item-title">Author</span>
     <span class="item-content">kk</span>
   </p>
   <p class="copyright-item">
-    <span class="item-title">上次更新</span>
+    <span class="item-title">LastMod</span>
     <span class="item-content">
         2024-10-21
         
@@ -317,11 +317,11 @@
         <a class="prev" href="/post/cpp23_ranges/">
             <i class="iconfont icon-left"></i>
             <span class="prev-text nav-default">c&#43;&#43;23 吐槽</span>
-            <span class="prev-text nav-mobile">上一篇</span>
+            <span class="prev-text nav-mobile">Prev</span>
           </a>
         <a class="next" href="/post/bpaddr/">
             <span class="next-text nav-default">是什么(写入/访问)了这个地址</span>
-            <span class="next-text nav-mobile">下一篇</span>
+            <span class="next-text nav-mobile">Next</span>
             <i class="iconfont icon-right"></i>
           </a>
       </nav>
@@ -346,11 +346,11 @@
 
 <div class="copyright">
   <span class="power-by">
-    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
   </span>
   <span class="division">|</span>
   <span class="theme-info">
-    主题 - 
+    Theme - 
     <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
   </span>
 
@@ -359,7 +359,7 @@
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+    2026<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
   </span>
 </div>
 
