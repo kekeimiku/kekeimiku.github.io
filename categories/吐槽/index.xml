@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>吐槽 on KK</title>
+    <link>/categories/%E5%90%90%E6%A7%BD/</link>
+    <description>Recent content in 吐槽 on KK</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 09 Dec 2024 17:28:17 +0800</lastBuildDate>
+    <atom:link href="/categories/%E5%90%90%E6%A7%BD/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rust 吐槽</title>
+      <link>/post/fuckrust/</link>
+      <pubDate>Mon, 09 Dec 2024 17:28:17 +0800</pubDate>
+      <guid>/post/fuckrust/</guid>
+      <description>&lt;p&gt;此文章可能引起不适，如果有 Rust 小鬼路过千万千万千万不要试图进来。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>狗草的网易雷火，司马东西</title>
+      <link>/post/fuckleihuo/</link>
+      <pubDate>Sat, 30 Nov 2024 18:31:21 +0800</pubDate>
+      <guid>/post/fuckleihuo/</guid>
+      <description>&lt;p&gt;此文可能引起不适，网易雷火的狗千万别点进来&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>双城之战2 吐槽</title>
+      <link>/post/lol_as2/</link>
+      <pubDate>Sun, 24 Nov 2024 13:12:21 +0800</pubDate>
+      <guid>/post/lol_as2/</guid>
+      <description>&lt;p&gt;此文可能引起不适，上城废物/导演养的狗/双城吹子 千万别点进来&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>c&#43;&#43;23 吐槽</title>
+      <link>/post/cpp23_ranges/</link>
+      <pubDate>Sun, 24 Nov 2024 12:08:21 +0800</pubDate>
+      <guid>/post/cpp23_ranges/</guid>
+      <description>&lt;p&gt;此文章可能引起不适，如果有路过的只写过 C++ 的脑残傻逼别点进来。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

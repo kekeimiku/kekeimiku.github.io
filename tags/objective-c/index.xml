@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Objective-C on KK</title>
+    <link>/tags/objective-c/</link>
+    <description>Recent content in Objective-C on KK</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 16 May 2025 14:52:16 +0800</lastBuildDate>
+    <atom:link href="/tags/objective-c/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LuckySpeeder-解</title>
+      <link>/post/lucky_speeder_notes/</link>
+      <pubDate>Fri, 16 May 2025 14:52:16 +0800</pubDate>
+      <guid>/post/lucky_speeder_notes/</guid>
+      <description>&lt;p&gt;这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。&lt;/p&gt;&#xA;&lt;p&gt;这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>LuckySpeeder-解 - KK</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="kk" /><meta name="description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。
+" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.152.2 with theme even" />
+
+
+<link rel="canonical" href="/post/lucky_speeder_notes/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2627c65f163ff60fe34f44400e3a685b143a66f46cd0180cab9f234e356fea3b.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:url" content="/post/lucky_speeder_notes/">
+  <meta property="og:site_name" content="KK">
+  <meta property="og:title" content="LuckySpeeder-解">
+  <meta property="og:description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-05-16T14:52:16+08:00">
+    <meta property="article:modified_time" content="2025-05-16T14:52:16+08:00">
+    <meta property="article:tag" content="Objective-C">
+    <meta property="article:tag" content="C">
+
+  <meta itemprop="name" content="LuckySpeeder-解">
+  <meta itemprop="description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。">
+  <meta itemprop="datePublished" content="2025-05-16T14:52:16+08:00">
+  <meta itemprop="dateModified" content="2025-05-16T14:52:16+08:00">
+  <meta itemprop="wordCount" content="3901">
+  <meta itemprop="keywords" content="Objective-C,C">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="LuckySpeeder-解">
+  <meta name="twitter:description" content="这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。
+这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。">
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">KK</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/ss/">
+        <li class="mobile-menu-item">碎碎念</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友接</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">KK</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/ss/">碎碎念</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/link/">友接</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+<script>
+  (function(){
+      if(''){
+          if (prompt('请输入文章密码') !== ''){
+              alert('密码错误！');
+              history.back();
+          }
+      }
+  })();
+</script>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">LuckySpeeder-解</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2025-05-16 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+            </div>
+          <span class="more-meta"> 约 3901 字 </span>
+          <span class="more-meta"> 预计阅读 8 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-让程序执行我们的代码">1. 让程序执行我们的代码</a></li>
+    <li><a href="#2-在程序中绘制ui">2. 在程序中绘制UI</a>
+      <ul>
+        <li><a href="#1-ui绘制失败">1. UI绘制失败</a></li>
+        <li><a href="#2-修复ui绘制">2. 修复UI绘制</a></li>
+        <li><a href="#3-置顶我们的view">3. 置顶我们的View</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-加速">3. 加速</a>
+      <ul>
+        <li><a href="#1-纯粹基于时间推进的hook">1. 纯粹基于时间推进的Hook</a></li>
+        <li><a href="#2-unity-hook">2. Unity Hook</a></li>
+        <li><a href="#3-apple-spritekit-framework-hook">3. Apple SpriteKit framework Hook</a></li>
+      </ul>
+    </li>
+    <li><a href="#完整代码">完整代码</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>这篇文章记录 LuckySpeeder 的开发过程，是如何在非越狱的 iOS 中实现的。</p>
+<p>这篇文章需要懂一些 ARM64架构、Mach-O 文件格式、调试器、链接器、内存、UI渲染逻辑、UI层级设计等诸如此类各种乱七八糟的知识。</p>
+<h1 id="1-让程序执行我们的代码">1. 让程序执行我们的代码</h1>
+<p>Mach-O文件由一个模块化结构，由多个 Load Commands 组成，用来描述程序的各种结构，比如段、节、依赖的动态库等。</p>
+<p>其中动态库导入表用于告诉程序运行时需要加载哪些动态库。</p>
+<p>其中还有一个特殊段，<code>__DATA,__mod_init_func</code> 里面保存了指向构造函数的函数指针数组，在程序启动时会遍历并调用它们，它会在 <code>main()</code> 执行之前就被调用。</p>
+<p>也就是说，可以做一个动态库，插入到动态库导入表中，随后程序启动时就会加载此动态库，加载完成后则会遍历并调用 <code>ctor</code> 中的函数指针，以此让程序执行我们的代码。</p>
+<p>当然让程序执行特定代码的方法很多，但利用动态库导入表+特殊段的方式是最为通用，最方便简单，也是最优的一种方式。</p>
+<p>C 语言中可以通过 GCC/CLANG 的扩展 <code>__attribute__((constructor))</code> 来定义 <code>ctor</code>。</p>
+<h1 id="2-在程序中绘制ui">2. 在程序中绘制UI</h1>
+<p>iOS中的任何GUI程序,都会依赖系统库倒出的外部接口<code>UIApplication</code>，它非常重要，在GUI程序中必定存在，所以我们可以直接调用它。</p>
+<h2 id="1-ui绘制失败">1. UI绘制失败</h2>
+<p>正常情况下，我们只要在<code>ctor</code>中通过<code>UIApplication</code>遍历整个UI结构，获取主控制器，然后在主控制器中添加我们的 <code>View</code>，就可以绘制UI。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="k">extern</span> <span class="n">UIApplication</span> <span class="o">*</span><span class="n">UIApp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">CreateMyView</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">UIWindowScene</span> <span class="o">*</span><span class="n">windowScene</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">UIWindowScene</span> <span class="o">*</span><span class="p">)[</span><span class="n">UIApp</span><span class="p">.</span><span class="n">connectedScenes</span> <span class="n">anyObject</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="n">UIViewController</span> <span class="o">*</span><span class="n">controller</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">      <span class="n">windowScene</span><span class="p">.</span><span class="n">windows</span><span class="p">.</span><span class="n">firstObject</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">controller</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">MyView</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">__attribute__</span><span class="p">((</span><span class="n">constructor</span><span class="p">))</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">initialize</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span> <span class="n">CreateMyView</span><span class="p">();</span> <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>当然这并不会成功，因为GUI程序被创建，它需要至少经历两个阶段: <code>创建窗口-&gt;绘制UI</code></p>
+<p><code>ctor</code> 会在 <code>main()</code> 之前被执行，创建窗口的操作又在 <code>main()</code> 中进行，所以绘制UI的操作需要在窗口创建之后才能能成功。</p>
+<h2 id="2-修复ui绘制">2. 修复UI绘制</h2>
+<p>我们需要延迟绘制UI，这里使用通知机制来实现这个</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="n">__attribute__</span><span class="p">((</span><span class="n">constructor</span><span class="p">))</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">initialize</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CFNotificationCenterAddObserver</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="n">CFNotificationCenterGetLocalCenter</span><span class="p">(),</span> <span class="nb">NULL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="n">CreateMyView</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">CFStringRef</span><span class="p">)</span><span class="n">UIApplicationDidFinishLaunchingNotification</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="n">CFNotificationSuspensionBehaviorCoalesce</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>UIApplicationDidFinishLaunchingNotification</code> 是 iOS 中的一个通知<code>Notification</code>，用于在应用程序完成启动时被发送。它属于 Apple 提供的 通知中心机制<code>NSNotificationCenter</code>的一部分。</p>
+<p>但还有一个问题，程序通常会有多个<code>View</code>,很可能将我们的<code>View</code>覆盖，所以需要一种方法来确保它在最上方。</p>
+<h2 id="3-置顶我们的view">3. 置顶我们的View</h2>
+<p>iOS 程序通过 <code>UIWindow</code> 中的 <code>addSubview</code>和<code>bringSubviewToFront</code> 来操控视图</p>
+<p><code>addSubview</code> 用于添加视图</p>
+<p><code>bringSubviewToFront</code> 用于将视图调整到最上方</p>
+<p>也就是说，我们只要<code>hook</code>这两个方法，在原始方法调用后，需要立即调用 <code>bringSubviewToFront</code> 将我们的视图重新调整到最上方</p>
+<p>幸运的是，使用 Objective-C 的<code>runtime</code>机制，动态修改<code>objc_msgSend</code>函数中的<code>id``selector</code>参数，来改变<code>id</code>与<code>selector</code>之间的对应关系就可以实现<code>hook</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">swizzleMethod</span><span class="p">(</span><span class="kt">Class</span> <span class="k">class</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">originalSelector</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                          <span class="kt">SEL</span> <span class="n">swizzledSelector</span><span class="p">,</span> <span class="kt">IMP</span> <span class="n">swizzledImplementation</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                          <span class="kt">IMP</span> <span class="o">*</span><span class="n">originalImplementation</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Method</span> <span class="n">originalMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="k">class</span><span class="p">,</span> <span class="n">originalSelector</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Method</span> <span class="n">swizzledMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="k">class</span><span class="p">,</span> <span class="n">swizzledSelector</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">class_addMethod</span><span class="p">(</span><span class="k">class</span><span class="p">,</span> <span class="n">originalSelector</span><span class="p">,</span> <span class="n">swizzledImplementation</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">swizzledMethod</span><span class="p">)))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">class_replaceMethod</span><span class="p">(</span><span class="k">class</span><span class="p">,</span> <span class="n">swizzledSelector</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">originalMethod</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">originalMethod</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">method_exchangeImplementations</span><span class="p">(</span><span class="n">originalMethod</span><span class="p">,</span> <span class="n">swizzledMethod</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">originalImplementation</span> <span class="o">=</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">originalMethod</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">Class</span> <span class="n">windowClass</span> <span class="o">=</span> <span class="n">objc_getClass</span><span class="p">(</span><span class="s">&#34;UIWindow&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">swizzleMethod</span><span class="p">(</span><span class="n">windowClass</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">bringSubviewToFront</span><span class="p">:),</span>
+</span></span><span class="line"><span class="cl">                <span class="k">@selector</span><span class="p">(</span><span class="nl">swizzled_bringSubviewToFront</span><span class="p">:),</span>
+</span></span><span class="line"><span class="cl">                <span class="p">(</span><span class="kt">IMP</span><span class="p">)</span><span class="n">my_bringSubviewToFront</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">(</span><span class="kt">IMP</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">original_bringSubviewToFront</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">swizzleMethod</span><span class="p">(</span><span class="n">windowClass</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">addSubview</span><span class="p">:),</span>
+</span></span><span class="line"><span class="cl">                <span class="k">@selector</span><span class="p">(</span><span class="nl">swizzled_addSubview</span><span class="p">:),</span> <span class="p">(</span><span class="kt">IMP</span><span class="p">)</span><span class="n">my_addSubview</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">(</span><span class="kt">IMP</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">original_addSubview</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[[</span><span class="n">UIApp</span> <span class="n">connectedScenes</span><span class="p">]</span> <span class="nl">respondsToSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">window</span><span class="p">)])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">Class</span> <span class="n">scenesClass</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIApp</span> <span class="n">connectedScenes</span><span class="p">]</span> <span class="k">class</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">class_addMethod</span><span class="p">(</span><span class="n">scenesClass</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="n">window</span><span class="p">),</span> <span class="p">(</span><span class="kt">IMP</span><span class="p">)</span><span class="n">scenesWindowIMP</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;@@:&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="3-加速">3. 加速</h1>
+<p>程序绘制每一帧画面的逻辑通常是基于<code>时间推进</code>的,并不是按&quot;帧数&quot;固定运行的,而是根据时间流逝来计算的,例如下面伪代码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">isRunning</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">deltaTime</span> <span class="o">=</span> <span class="nf">GetTime</span><span class="p">()</span> <span class="o">-</span> <span class="n">lastTime</span><span class="p">;</span>   <span class="c1">// 获取自上次帧以来的时间差
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">lastTime</span> <span class="o">=</span> <span class="nf">GetTime</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">updateLogic</span><span class="p">(</span><span class="n">deltaTime</span><span class="p">);</span>         <span class="c1">// 根据deltaTime推进逻辑
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">render</span><span class="p">();</span>                           <span class="c1">// 绘制画面
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>所以，如果我们能加快时间(比如让 1 秒看起来像 2 秒)，那么程序每帧获取到的 deltaTime 就变成 2 倍，所有程序逻辑都以更大的步长更新，看起来就像&quot;加速&quot;了，反之亦然。</p>
+<p>我们可以采用hook的方式来实现这个，而常用hook方法通常有以下几种</p>
+<ol>
+<li>
+<p>基于重绑定符号表的 Hook (可调用原始函数，但目标函数必须存在于系统库中)</p>
+</li>
+<li>
+<p>基于硬件断点的 Hook (不可调用原始函数，但是什么都能hook并且数量有限制)</p>
+</li>
+<li>
+<p>OC运行时 Hook (只能hook OC，例如上述绘制UI时调整层级就使用了这种技术)</p>
+</li>
+<li>
+<p>内联 Hook (几乎完美的方案，什么都能hook，可调用原始函数，可惜非越狱环境不可用，唯一的方法是修改<code>Mach-O</code>文件)</p>
+</li>
+</ol>
+<h2 id="1-纯粹基于时间推进的hook">1. 纯粹基于时间推进的Hook</h2>
+<p>通常程序会使用 <code>gettimeofday</code> <code>clock_gettime</code> <code>mach_absolute_time</code> 等方式获取时间，可以采用基于重绑定符号表的 Hook。</p>
+<p>原因是它们属于系统接口，并且由于<code>Mach-O</code>文件的动态绑定机制，苹果的共享缓存库不会被编译进我们的<code>Mach-O</code>文件，而是在动态链接时才去重新绑定。</p>
+<p>编译时在 <code>Mach-O</code>文件 <code>_DATA</code> 段的符号表中为每一个被引用的系统 C 函数建立一个指针（8字节的数据，放的全是0），这个指针用于动态绑定时重定位到共享库中的函数实现。</p>
+<p>在运行时当系统函数被第一次调用时会动态绑定一次，然后将 <code>Mach-O</code> 中的 <code>_DATA</code> 段符号表中对应的指针，指向外部函数（其在共享库中的实际内存地址）。</p>
+<p>所以我们只需要将指向系统方法（外部函数）的指针重新进行绑定指向内部函数/自定义函数，然后将内部函数的指针在动态链接时指向系统方法的地址，就可以实现hook。</p>
+<p>可以使用 <a href="https://github.com/facebook/fishhook">https://github.com/facebook/fishhook</a> 来完成</p>
+<p>例子:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">rebinding</span> <span class="n">rebindings</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;mach_absolute_time&#34;</span><span class="p">,</span> <span class="n">my_mach_absolute_time</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                 <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">original_mach_absolute_time</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nf">rebind_symbols</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rebindings</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>例外情况：</p>
+<p>重绑定符号表的 Hook 可能无效，例如某些 APP 中不知是什么原因，hook <code>clock_gettime</code> 成功但是没有效果，具体原因我没有调查</p>
+<p>我这里直接使用 <code>基于硬件断点的 Hook</code> 解决这个问题，实际上它有点类似于编写了一个简单的调试器</p>
+<p>核心代码实现：</p>
+<ol>
+<li>获取当前的异常处理端口</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">task_get_exception_ports</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">EXC_MASK_BREAKPOINT</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="n">masks</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">port_count</span><span class="p">,</span> <span class="n">current_ports</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="n">behaviors</span><span class="p">,</span> <span class="n">flavors</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>分配一个新的Mach端口用于接收异常</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">mach_port_allocate</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">MACH_PORT_RIGHT_RECEIVE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">server</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_port_insert_right</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">server</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">MACH_MSG_TYPE_MAKE_SEND</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>将断点异常重定向到我们的端口</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">task_set_exception_ports</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">EXC_MASK_BREAKPOINT</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="n">server</span><span class="p">,</span> <span class="n">EXCEPTION_STATE</span> <span class="o">|</span> <span class="n">MACH_EXCEPTION_CODES</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="n">ARM_THREAD_STATE64</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="4">
+<li>在后台堵塞等待异常处理任务</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">exception_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">unused</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mach_msg_server</span><span class="p">(</span><span class="n">mach_exc_server</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">union</span> <span class="n">__RequestUnion__catch_mach_exc_subsystem</span><span class="p">),</span> <span class="n">server</span><span class="p">,</span> <span class="n">MACH_MSG_OPTION_NONE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="kr">thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">exception_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="5">
+<li>设置断点</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">arm_debug_state64_t</span> <span class="n">state</span> <span class="o">=</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl"><span class="n">state</span><span class="p">.</span><span class="n">__bvr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">addr</span><span class="p">;</span>   <span class="c1">// 断点地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">state</span><span class="p">.</span><span class="n">__bcr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x1e5</span><span class="p">;</span>  <span class="c1">// 启用断点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">task_set_state</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">ARM_DEBUG_STATE64</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">state</span><span class="p">,</span> <span class="n">ARM_DEBUG_STATE64_COUNT</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="6">
+<li>断点触发后系统会调用 <code>catch_mach_exception_raise_state</code> 函数，我们在里面可以修改线程状态</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">hooks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">old</span> <span class="o">==</span> <span class="nf">arm_thread_state64_get_pc</span><span class="p">(</span><span class="o">*</span><span class="n">old</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">new</span> <span class="o">=</span> <span class="o">*</span><span class="n">old</span><span class="p">;</span>                                         <span class="c1">// 复制线程状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="o">*</span><span class="n">new_stateCnt</span> <span class="o">=</span> <span class="n">old_stateCnt</span><span class="p">;</span>                        
+</span></span><span class="line"><span class="cl">    <span class="nf">arm_thread_state64_set_pc_fptr</span><span class="p">(</span><span class="o">*</span><span class="n">new</span><span class="p">,</span> <span class="n">hooks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">new</span><span class="p">);</span> <span class="c1">// 重定向PC
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">KERN_SUCCESS</span><span class="p">;</span>  <span class="c1">// 返回成功告诉内核继续执行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>整个hook流程为：</p>
+<ul>
+<li>
+<p>程序执行到某个地址</p>
+</li>
+<li>
+<p>CPU检查PC是否匹配硬件断点</p>
+</li>
+<li>
+<p>匹配则生成EXC_BREAKPOINT异常</p>
+</li>
+<li>
+<p>内核查找异常处理端口配置</p>
+</li>
+<li>
+<p>发现我们设置的server端口</p>
+</li>
+<li>
+<p>封装异常信息为Mach消息发送到server端口</p>
+</li>
+<li>
+<p>exception_handler线程的mach_msg_server接收消息</p>
+</li>
+<li>
+<p>mach_exc_server根据EXCEPTION_STATE标志选择处理函数</p>
+</li>
+<li>
+<p>调用catch_mach_exception_raise_state</p>
+</li>
+<li>
+<p>检查hook表，重定向PC到我们的函数</p>
+</li>
+<li>
+<p>返回KERN_SUCCESS</p>
+</li>
+<li>
+<p>将new_state中的寄存器状态恢复到CPU</p>
+</li>
+<li>
+<p>现在PC指向我们的hook函数而不是原函数</p>
+</li>
+<li>
+<p>内核恢复执行，但执行的是我们的代码</p>
+</li>
+</ul>
+<p>具体代码实现 <a href="https://github.com/kekeimiku/LuckySpeeder/blob/main/hwbphook.c">https://github.com/kekeimiku/LuckySpeeder/blob/main/hwbphook.c</a></p>
+<h2 id="2-unity-hook">2. Unity Hook</h2>
+<p>较新版本 Unity 开发的程序，渲染逻辑是每帧驱动的，而不是纯粹由<code>时间推进</code>。</p>
+<p>这种比较复杂，仅仅hook系统时间通常没什么用，不过Unity引擎通常由 <code>set_timeScale</code> 来控制整体动画速度，所以我们只需要hook并调用这个函数就可以了。</p>
+<p>当然 <code>set_timeScale</code> 并不在系统函数中，所以无法使用&quot;传统&quot;基于重绑定符号表的Hook，不过我们可以利用 <code>UnityFramework</code> 自身的符号绑定机制进行hook。</p>
+<p>首先通过 <code>_dyld_image_count()</code> 获取所有加载的动态库数量，然后找到 <code>UnityFramework.framework</code> 的偏移</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="kt">intptr_t</span> <span class="n">unity_vmaddr_slide</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">uint32_t</span> <span class="n">image_count</span> <span class="o">=</span> <span class="nf">_dyld_image_count</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">image_name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">image_count</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">image_name</span> <span class="o">=</span> <span class="nf">_dyld_get_image_name</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">strstr</span><span class="p">(</span><span class="n">image_name</span><span class="p">,</span> <span class="s">&#34;UnityFramework.framework/UnityFramework&#34;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">unity_vmaddr_slide</span> <span class="o">=</span> <span class="nf">_dyld_get_image_vmaddr_slide</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在 <code>UnityFramework</code> 中 <code>__TEXT</code> 段的 <code>__cstring</code> 节中查找<code>set_timeScale</code>方法签名</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">cstring_section_data</span> <span class="o">=</span> <span class="nf">getsectiondata</span><span class="p">((</span><span class="k">const</span> <span class="k">struct</span> <span class="n">mach_header_64</span> <span class="o">*</span><span class="p">)</span><span class="n">unity_vmaddr_slide</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                     <span class="s">&#34;__TEXT&#34;</span><span class="p">,</span> <span class="s">&#34;__cstring&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">time_scale_function_address</span> <span class="o">=</span> <span class="nf">memmem</span><span class="p">(</span><span class="n">cstring_section_data</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">             <span class="s">&#34;UnityEngine.Time::set_timeScale(System.Single)&#34;</span><span class="p">,</span> <span class="mh">0x2F</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>获取 <code>UnityFramework</code> 中 <code>__TEXT</code> 段的 <code>il2cpp</code> 地址</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="kt">uintptr_t</span> <span class="n">il2cpp_section_base</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="nf">getsectiondata</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">mach_header_64</span> <span class="o">*</span><span class="p">)</span><span class="n">unity_vmaddr_slide</span><span class="p">,</span> <span class="s">&#34;__TEXT&#34;</span><span class="p">,</span> <span class="s">&#34;il2cpp&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="o">&amp;</span><span class="n">size</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在 <code>il2cpp</code> 中进行指令匹配，检查里面是否有存储<code>set_timeScale</code>的方法签名的指针</p>
+<p><code>ARM64</code>中一个指令固定4字节大小，所以只需要<code>step 4</code>，然后匹配 <code>ADRP</code>和<code>ADD</code>指令。</p>
+<p><code>ADRP</code>指令用于加载函数地址的高位,<code>ADD</code> 指令用于计算完整的函数地址,这种模式在<code>ARM64</code>中常用于函数调用</p>
+<p><code>0x9F000000</code>提取指令的高8位, 模式<code>0x90000000</code>判断<code>ADRP</code>指令。</p>
+<p><code>0xFF800000</code>提取指令的高9位, 模式<code>0x91000000</code>判断<code>ADD</code>指令。</p>
+<p><code>0xFFFFFFFFFFFFF000LL</code> 提取页偏移</p>
+<p><code>0xC00000</code>提取<code>ADD</code>指令中<code>shift</code>的数值判断是否需要移位</p>
+<p><code>0x1000000</code>检查第24位，判断是否需要8字节对齐</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">second_instruction</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">il2cpp_section_base</span> <span class="o">+</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">((</span><span class="n">first_instruction</span> <span class="o">&amp;</span> <span class="mh">0x9F000000</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x90000000</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="n">second_instruction</span> <span class="o">&amp;</span> <span class="mh">0xFF800000</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x91000000</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">resolved_address</span> <span class="o">=</span> <span class="p">(</span><span class="n">il2cpp_section_base</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFFFFFFF000LL</span><span class="p">)</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                         <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)((((</span><span class="n">first_instruction</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFC</span><span class="p">)</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">                                     <span class="p">((</span><span class="n">first_instruction</span> <span class="o">&gt;&gt;</span> <span class="mi">29</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">                                    <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">function_offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">second_instruction</span> <span class="o">&gt;&gt;</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFF</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">((</span><span class="n">second_instruction</span> <span class="o">&amp;</span> <span class="mh">0xC00000</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">function_offset</span> <span class="o">&lt;&lt;=</span> <span class="mi">12</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">((</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">resolved_address</span> <span class="o">+</span> <span class="n">function_offset</span><span class="p">)</span> <span class="o">==</span>
+</span></span><span class="line"><span class="cl">          <span class="n">time_scale_function_address</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">il2cpp_section_base</span> <span class="o">+=</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">first_instruction</span> <span class="o">=</span> <span class="n">second_instruction</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">((</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">il2cpp_section_base</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">il2cpp_end</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>计算代码段地址</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">code_section_address</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_address</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFFFFFFF000LL</span><span class="p">)</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                       <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)((((</span><span class="n">current_instruction</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFC</span><span class="p">)</span> <span class="o">|</span>
+</span></span><span class="line"><span class="cl">                                   <span class="p">((</span><span class="n">current_instruction</span> <span class="o">&gt;&gt;</span> <span class="mi">29</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">                                  <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>获取方法数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="n">method_data</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">current_address</span> <span class="o">+</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uintptr_t</span> <span class="n">function_data_offset</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">((</span><span class="n">method_data</span> <span class="o">&amp;</span> <span class="mh">0x1000000</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">function_data_offset</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="p">((</span><span class="n">method_data</span> <span class="o">&gt;&gt;</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFF</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="n">function_data_offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">method_data</span> <span class="o">&gt;&gt;</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFF</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>获取原始函数指针</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">uintptr_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">code_section_address</span> <span class="o">+</span> <span class="n">function_data_offset</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">original_timeScale</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">**</span><span class="p">)(</span><span class="kt">float</span><span class="p">))(</span><span class="n">function_data_offset</span> <span class="o">+</span> <span class="n">code_section_address</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span> <span class="n">instruction_operand</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">il2cpp_section_base</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">code_section_start</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">il2cpp_section_base</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uintptr_t</span> <span class="n">instruction_offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">instruction_operand</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFC</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uintptr_t</span> <span class="n">address_offset</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">instruction_operand</span> <span class="o">&amp;</span> <span class="mh">0x3FFFFFF</span><span class="p">))</span> <span class="o">|</span> <span class="mh">0xFFFFFFFFF0000000LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(((</span><span class="mi">4</span> <span class="o">*</span> <span class="n">instruction_operand</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x8000000</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">function_offset</span> <span class="o">=</span> <span class="n">address_offset</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="n">function_offset</span> <span class="o">=</span> <span class="n">instruction_offset</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">original_timeScale</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">float</span><span class="p">))((</span><span class="kt">uintptr_t</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">))</span> <span class="o">&amp;</span>
+</span></span><span class="line"><span class="cl">                                           <span class="n">code_section_start</span><span class="p">[</span><span class="n">function_offset</span><span class="p">])(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">time_scale_function_address</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>设置函数指针</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">original_timeScale</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="p">(</span><span class="kt">uintptr_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">function_data_offset</span> <span class="o">+</span> <span class="n">code_section_address</span><span class="p">)</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">my_timeScale</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后可以设置时间缩放</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">set_timeScale</span><span class="p">(</span><span class="kt">float</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">timeScale_speed</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">my_timeScale</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="3-apple-spritekit-framework-hook">3. Apple SpriteKit framework Hook</h2>
+<p>它的渲染逻辑也是是每帧驱动的，而不是纯粹由<code>时间推进</code>。</p>
+<p>不过它底层是OC运行时，所以我们可以使用运行时Hook对应的函数，<code>SpriteKit</code>在<code>update</code>方法中更新每一帧，在每一帧中，它可以设置场景速度<code>SKScene.physicsWorld.speed</code>以及节点的动作速度<code>SKNode.setSpeed</code>。</p>
+<p>所以我们可以 Hook <code>update</code> 方法。</p>
+<p>我们需要先查找 <code>GameScene</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl">  <span class="kt">Class</span> <span class="n">gameSceneClass</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">numClasses</span> <span class="o">=</span> <span class="n">objc_getClassList</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">numClasses</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">Class</span> <span class="o">*</span><span class="n">classes</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">Class</span><span class="p">)</span> <span class="o">*</span> <span class="n">numClasses</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">numClasses</span> <span class="o">=</span> <span class="n">objc_getClassList</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">numClasses</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numClasses</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">Class</span> <span class="k">class</span> <span class="o">=</span> <span class="n">classes</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">class_getSuperclass</span><span class="p">(</span><span class="k">class</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="n">SKScene</span> <span class="k">class</span><span class="p">]</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">[</span><span class="n">NSStringFromClass</span><span class="p">(</span><span class="k">class</span><span class="p">)</span> <span class="nl">hasSuffix</span><span class="p">:</span><span class="s">@&#34;GameScene&#34;</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="k">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">update</span><span class="p">:)))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">gameSceneClass</span> <span class="o">=</span> <span class="k">class</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">free</span><span class="p">(</span><span class="n">classes</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后替换<code>update</code>方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl">   <span class="n">Method</span> <span class="n">updateMethod</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">gameSceneClass</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">update</span><span class="p">:));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">updateMethod</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">original_SKScene_update</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span>
+</span></span><span class="line"><span class="cl">          <span class="kt">id</span><span class="p">,</span> <span class="kt">SEL</span><span class="p">,</span> <span class="n">NSTimeInterval</span><span class="p">))</span><span class="n">method_getImplementation</span><span class="p">(</span><span class="n">updateMethod</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">method_setImplementation</span><span class="p">(</span><span class="n">updateMethod</span><span class="p">,</span> <span class="p">(</span><span class="kt">IMP</span><span class="p">)</span><span class="n">my_SKScene_update</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们的 <code>my_SKScene_update</code> 函数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">my_SKScene_update</span><span class="p">(</span><span class="kt">id</span> <span class="nb">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">_cmd</span><span class="p">,</span> <span class="n">NSTimeInterval</span> <span class="n">currentTime</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">([</span><span class="nb">self</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="n">SKScene</span> <span class="k">class</span><span class="p">]])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SKScene</span> <span class="o">*</span><span class="n">scene</span> <span class="o">=</span> <span class="p">(</span><span class="n">SKScene</span> <span class="o">*</span><span class="p">)</span><span class="nb">self</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">scene</span><span class="p">.</span><span class="n">physicsWorld</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">scene</span><span class="p">.</span><span class="n">physicsWorld</span><span class="p">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">SKScene_update_speed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="n">scene</span> <span class="nl">enumerateChildNodesWithName</span><span class="p">:</span><span class="s">@&#34;//*&#34;</span>
+</span></span><span class="line"><span class="cl">                              <span class="nl">usingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">SKNode</span> <span class="o">*</span><span class="n">node</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="k">if</span> <span class="p">([</span><span class="n">node</span> <span class="n">hasActions</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                  <span class="p">[</span><span class="n">node</span> <span class="nl">setSpeed</span><span class="p">:</span><span class="n">SKScene_update_speed</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                              <span class="p">}];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="完整代码">完整代码</h1>
+<p>参考 <a href="https://github.com/kekeimiku/LuckySpeeder">https://github.com/kekeimiku/LuckySpeeder</a></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">kk</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2025-05-16
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/objective-c/">Objective-C</a>
+          <a href="/tags/c/">C</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/mac_alt_tab_fix/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">逆向修改 macOS Alt&#43;Tab 行为 &amp;&amp; 编写沙箱注入器</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/fuckrust/">
+            <span class="next-text nav-default">Rust 吐槽</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:kekelanact@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/kekeimiku" class="iconfont icon-github" title="github"></a>
+  
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+<script>
+  function createCopyButton(highlightDiv) {
+    const div = document.createElement("div");
+    div.className = "copy-code";
+    div.innerText = "Copy";
+    div.addEventListener("click", () =>
+      copyCodeToClipboard(div, highlightDiv)
+    );
+    addCopyButtonToDom(div, highlightDiv);
+  }
+
+  async function copyCodeToClipboard(button, highlightDiv) {
+    const codeToCopy = highlightDiv.querySelector(":last-child > .chroma > code")
+      .innerText;
+    await navigator.clipboard.writeText(codeToCopy);
+    button.blur();
+    button.innerText = "Copied!";
+    setTimeout(() => button.innerText = "Copy", 2000);
+  }
+
+  function addCopyButtonToDom(button, highlightDiv) {
+    highlightDiv.insertBefore(button, highlightDiv.firstChild);
+    const wrapper = document.createElement("div");
+    wrapper.className = "highlight-wrapper";
+    highlightDiv.parentNode.insertBefore(wrapper, highlightDiv);
+    wrapper.appendChild(highlightDiv);
+  }
+
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(!isMobile){
+     document.querySelectorAll(".highlight").forEach((highlightDiv) => createCopyButton(highlightDiv));
+  }
+</script>  
+
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on KK</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on KK</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 23 Nov 2025 13:15:11 +0800</lastBuildDate>
+    <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ARM64e</title>
+      <link>/tags/arm64e/</link>
+      <pubDate>Sun, 23 Nov 2025 13:15:11 +0800</pubDate>
+      <guid>/tags/arm64e/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Assembly</title>
+      <link>/tags/assembly/</link>
+      <pubDate>Sun, 23 Nov 2025 13:15:11 +0800</pubDate>
+      <guid>/tags/assembly/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>C</title>
+      <link>/tags/c/</link>
+      <pubDate>Sun, 23 Nov 2025 13:15:11 +0800</pubDate>
+      <guid>/tags/c/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>内存</title>
+      <link>/tags/%E5%86%85%E5%AD%98/</link>
+      <pubDate>Sun, 23 Nov 2025 13:15:11 +0800</pubDate>
+      <guid>/tags/%E5%86%85%E5%AD%98/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>逆向</title>
+      <link>/tags/%E9%80%86%E5%90%91/</link>
+      <pubDate>Sun, 23 Nov 2025 13:15:11 +0800</pubDate>
+      <guid>/tags/%E9%80%86%E5%90%91/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Objective-C</title>
+      <link>/tags/objective-c/</link>
+      <pubDate>Fri, 16 May 2025 14:52:16 +0800</pubDate>
+      <guid>/tags/objective-c/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Rust</title>
+      <link>/tags/rust/</link>
+      <pubDate>Mon, 09 Dec 2024 17:28:17 +0800</pubDate>
+      <guid>/tags/rust/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>编程</title>
+      <link>/tags/%E7%BC%96%E7%A8%8B/</link>
+      <pubDate>Mon, 09 Dec 2024 17:28:17 +0800</pubDate>
+      <guid>/tags/%E7%BC%96%E7%A8%8B/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>吐槽</title>
+      <link>/tags/%E5%90%90%E6%A7%BD/</link>
+      <pubDate>Mon, 09 Dec 2024 17:28:17 +0800</pubDate>
+      <guid>/tags/%E5%90%90%E6%A7%BD/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>游戏</title>
+      <link>/tags/%E6%B8%B8%E6%88%8F/</link>
+      <pubDate>Sat, 30 Nov 2024 18:31:21 +0800</pubDate>
+      <guid>/tags/%E6%B8%B8%E6%88%8F/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>C&#43;&#43;</title>
+      <link>/tags/c&#43;&#43;/</link>
+      <pubDate>Sun, 24 Nov 2024 12:08:21 +0800</pubDate>
+      <guid>/tags/c&#43;&#43;/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>X86</title>
+      <link>/tags/x86/</link>
+      <pubDate>Sat, 14 Sep 2024 15:53:21 +0800</pubDate>
+      <guid>/tags/x86/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>生活</title>
+      <link>/tags/%E7%94%9F%E6%B4%BB/</link>
+      <pubDate>Wed, 06 Sep 2023 19:39:52 +0800</pubDate>
+      <guid>/tags/%E7%94%9F%E6%B4%BB/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Go</title>
+      <link>/tags/go/</link>
+      <pubDate>Mon, 26 Jun 2023 10:46:46 +0800</pubDate>
+      <guid>/tags/go/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

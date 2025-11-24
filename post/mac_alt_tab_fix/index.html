@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>逆向修改 macOS Alt&#43;Tab 行为 &amp;&amp; 编写沙箱注入器 - KK</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="kk" /><meta name="description" content="众所周知 macOS 默认的 Alt/Command&#43;Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。
+虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
+我预期的行为是 Alt/Command&#43;Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command&#43;Tab 切换 APP 会切换到其它工作区以及 &ldquo;无事发生&rdquo; 的行为。
+系统版本: macOS 26.1 (25B78)
+这篇文章记录修改过程。
+主要是两个功能:
+从切换列表中剔除所有没有可见窗口的 App。
+各工作区独立管理自己的 App 切换列表，不会再跳到其他工作区。
+" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.152.2 with theme even" />
+
+
+<link rel="canonical" href="/post/mac_alt_tab_fix/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2627c65f163ff60fe34f44400e3a685b143a66f46cd0180cab9f234e356fea3b.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:url" content="/post/mac_alt_tab_fix/">
+  <meta property="og:site_name" content="KK">
+  <meta property="og:title" content="逆向修改 macOS Alt&#43;Tab 行为 && 编写沙箱注入器">
+  <meta property="og:description" content="众所周知 macOS 默认的 Alt/Command&#43;Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。
+虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
+我预期的行为是 Alt/Command&#43;Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command&#43;Tab 切换 APP 会切换到其它工作区以及 “无事发生” 的行为。
+系统版本: macOS 26.1 (25B78)
+这篇文章记录修改过程。
+主要是两个功能:
+从切换列表中剔除所有没有可见窗口的 App。
+各工作区独立管理自己的 App 切换列表，不会再跳到其他工作区。">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-11-23T13:15:11+08:00">
+    <meta property="article:modified_time" content="2025-11-23T13:15:11+08:00">
+    <meta property="article:tag" content="逆向">
+    <meta property="article:tag" content="内存">
+    <meta property="article:tag" content="ARM64e">
+    <meta property="article:tag" content="C">
+    <meta property="article:tag" content="Assembly">
+
+  <meta itemprop="name" content="逆向修改 macOS Alt&#43;Tab 行为 && 编写沙箱注入器">
+  <meta itemprop="description" content="众所周知 macOS 默认的 Alt/Command&#43;Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。
+虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
+我预期的行为是 Alt/Command&#43;Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command&#43;Tab 切换 APP 会切换到其它工作区以及 “无事发生” 的行为。
+系统版本: macOS 26.1 (25B78)
+这篇文章记录修改过程。
+主要是两个功能:
+从切换列表中剔除所有没有可见窗口的 App。
+各工作区独立管理自己的 App 切换列表，不会再跳到其他工作区。">
+  <meta itemprop="datePublished" content="2025-11-23T13:15:11+08:00">
+  <meta itemprop="dateModified" content="2025-11-23T13:15:11+08:00">
+  <meta itemprop="wordCount" content="2360">
+  <meta itemprop="keywords" content="逆向,内存,ARM64e,C,Assembly">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="逆向修改 macOS Alt&#43;Tab 行为 && 编写沙箱注入器">
+  <meta name="twitter:description" content="众所周知 macOS 默认的 Alt/Command&#43;Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。
+虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。
+我预期的行为是 Alt/Command&#43;Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command&#43;Tab 切换 APP 会切换到其它工作区以及 “无事发生” 的行为。
+系统版本: macOS 26.1 (25B78)
+这篇文章记录修改过程。
+主要是两个功能:
+从切换列表中剔除所有没有可见窗口的 App。
+各工作区独立管理自己的 App 切换列表，不会再跳到其他工作区。">
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">KK</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/ss/">
+        <li class="mobile-menu-item">碎碎念</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友接</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">KK</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/ss/">碎碎念</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/link/">友接</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+<script>
+  (function(){
+      if(''){
+          if (prompt('请输入文章密码') !== ''){
+              alert('密码错误！');
+              history.back();
+          }
+      }
+  })();
+</script>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">逆向修改 macOS Alt&#43;Tab 行为 &amp;&amp; 编写沙箱注入器</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2025-11-23 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+            </div>
+          <span class="more-meta"> 约 2360 字 </span>
+          <span class="more-meta"> 预计阅读 5 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#先上最终效果图">先上最终效果图</a>
+          <ul>
+            <li><a href="#1-旧">1. 旧</a></li>
+            <li><a href="#2-新">2. 新</a></li>
+          </ul>
+        </li>
+        <li><a href="#修改-dockapp">修改 Dock.app</a></li>
+        <li><a href="#沙箱注入器">沙箱注入器</a></li>
+        <li><a href="#享受">享受</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>众所周知 macOS 默认的 Alt/Command+Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。</p>
+<p>虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。</p>
+<p>我预期的行为是 Alt/Command+Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command+Tab 切换 APP 会切换到其它工作区以及 &ldquo;无事发生&rdquo; 的行为。</p>
+<p>系统版本: macOS 26.1 (25B78)</p>
+<p>这篇文章记录修改过程。</p>
+<p>主要是两个功能:</p>
+<ol>
+<li>
+<p>从切换列表中剔除所有没有可见窗口的 App。</p>
+</li>
+<li>
+<p>各工作区独立管理自己的 App 切换列表，不会再跳到其他工作区。</p>
+</li>
+</ol>
+<h2 id="先上最终效果图">先上最终效果图</h2>
+<h3 id="1-旧">1. 旧</h3>
+<p><img src="/assets/old.png" alt="old_dock"></p>
+<h3 id="2-新">2. 新</h3>
+<p><img src="/assets/new.png" alt="new_dock"></p>
+<h2 id="修改-dockapp">修改 Dock.app</h2>
+<p>别的先不管，先给头文件 dump 出来看看</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ipsw class-dump --headers <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -o DockHeaders <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>随便搜索一下关键词 <code>switch</code> 发现 <code>ASAppSwitcher</code> 接口，定义如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="k">@interface</span> <span class="nc">ASAppSwitcher</span> : <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">BezelIconList</span><span class="o">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* instance variables */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">BezelIconList</span> <span class="o">*</span><span class="n">_bezelIconList</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">_processes</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">id</span> <span class="n">_justHiddenASN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="o">*</span> <span class="n">_noteID</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">NSObject</span><span class="o">&lt;</span><span class="n">OS_dispatch_source</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">_keyRepeatTimer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">NSMapTable</span> <span class="o">*</span><span class="n">_dragAcceptanceMap</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">__CFDictionary</span> <span class="o">*</span> <span class="n">_notifications</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ASContinuityBestApplication</span> <span class="o">*</span><span class="n">_continuityApp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">_selectionChangeCount</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ECAXObserverStoreWrapper</span> <span class="o">*</span><span class="n">_observerStore</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_Bool</span> <span class="n">_shown</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_Bool</span> <span class="n">_hotKeysTurnedOff</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_Bool</span> <span class="n">_destroySpace</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_Bool</span> <span class="n">_registeredForStatusLabelNotification</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_Bool</span> <span class="n">_hasHandoff</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>还有一个 <code>show</code> 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">show:</span><span class="p">(</span><span class="n">_Bool</span><span class="p">)</span><span class="nv">show</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>每次按下 Alt/Command+Tab 的时候都会调用 <code>show</code>，然后展示 <code>NSMutableArray *_processes;</code> 储存的 APP 列表</p>
+<p>也就是说，只要 hook <code>ASAppSwitcher show</code> 然后修改 <code>_processes</code> 就行了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="k">static</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">orig_show</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span> <span class="kt">SEL</span><span class="p">,</span> <span class="kt">BOOL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">my_ASAppSwitcher_show</span><span class="p">(</span><span class="kt">id</span> <span class="nb">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">_cmd</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">show</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Ivar</span> <span class="n">processesIvar</span> <span class="o">=</span> <span class="n">class_getInstanceVariable</span><span class="p">([</span><span class="nb">self</span> <span class="k">class</span><span class="p">],</span> <span class="s">&#34;_processes&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">processes</span> <span class="o">=</span> <span class="n">object_getIvar</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">processesIvar</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// TODO
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">orig_show</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">_cmd</span><span class="p">,</span> <span class="n">show</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">Class</span> <span class="n">cls</span> <span class="o">=</span> <span class="n">objc_getClass</span><span class="p">(</span><span class="s">&#34;ASAppSwitcher&#34;</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl"><span class="kt">SEL</span> <span class="n">sel</span> <span class="o">=</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">show</span><span class="p">:);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">sel</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">orig_show</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">method_getImplementation</span><span class="p">(</span><span class="n">method</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">method_setImplementation</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="p">(</span><span class="kt">IMP</span><span class="p">)</span><span class="n">my_ASAppSwitcher_show</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>但说起来容易，实际上并不知道 <code>_processes</code> 里面到底是个什么东西，要实现我的需求，首先要能获取 <code>_processes</code> 中的具体信息</p>
+<p>这时我发现有两个方法 <code>imageChanged</code> <code>progressChanged</code>，看签名可能和 <code>_processes</code> 有关系，也许 <code>_processes</code> 携带了 <code>CPSProcessSerNum</code></p>
+<p>如果能拿到 <code>CPSProcessSerNum</code> 我们就可以通过 <code>GetProcessPID(const ProcessSerialNumber *psn,  pid_t *pid)</code> 获取到进程 ID</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">imageChanged:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">changed</span> <span class="nf">forProcess:</span><span class="p">(</span><span class="k">struct</span> <span class="n">CPSProcessSerNum</span> <span class="p">{</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">x0</span><span class="p">;</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">x1</span><span class="p">;</span> <span class="p">})</span><span class="nv">process</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">progressChanged:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">changed</span> <span class="nf">forProcess:</span><span class="p">(</span><span class="k">struct</span> <span class="n">CPSProcessSerNum</span> <span class="p">{</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">x0</span><span class="p">;</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">x1</span><span class="p">;</span> <span class="p">})</span><span class="nv">process</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我决定先模糊测试一下是否可以找到 <code>PSN</code>,结果我发现</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># memory dump</span>
+</span></span><span class="line"><span class="cl">b9 a4 b3 ee <span class="m">01</span> <span class="m">80</span> <span class="m">04</span> <span class="m">01</span> <span class="m">80</span> 4d <span class="m">00</span> <span class="m">94</span> 2f <span class="m">23</span> <span class="m">00</span> <span class="m">00</span>
+</span></span><span class="line"><span class="cl"><span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 4b b0 <span class="m">04</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> f4 a3 1e <span class="m">09</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> f0 f3 a3 1e <span class="m">09</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span>
+</span></span><span class="line"><span class="cl">c0 f3 a3 1e <span class="m">09</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">PSN at offset 16: <span class="nv">lo</span><span class="o">=</span>0, <span class="nv">hi</span><span class="o">=</span>307275, <span class="nv">cid</span><span class="o">=</span><span class="m">650563</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>PSN</code> 就在 <code>_processes</code> 中每个元素偏移 16 的位置，这下好办了</p>
+<p>先遍历获取进程 ID</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="n">NSUInteger</span> <span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="n">processes</span> <span class="n">count</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="n">NSUInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="o">*</span><span class="n">process</span> <span class="o">=</span> <span class="p">[</span><span class="n">processes</span> <span class="nl">objectAtIndex</span><span class="p">:</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// PSN is at offset 16 in __NSCFType
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">bytes</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">process</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ProcessSerialNumber</span> <span class="o">*</span><span class="n">psn</span> <span class="o">=</span> <span class="p">(</span><span class="n">ProcessSerialNumber</span> <span class="o">*</span><span class="p">)(</span><span class="n">bytes</span> <span class="o">+</span> <span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">pid_t</span> <span class="n">pid</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">OSStatus</span> <span class="n">err</span> <span class="o">=</span> <span class="n">GetProcessPID</span><span class="p">(</span><span class="n">psn</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pid</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// TODO
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>获取当前屏幕上的所有窗口</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="n">CFArrayRef</span> <span class="n">windowList</span> <span class="o">=</span> <span class="n">CGWindowListCopyWindowInfo</span><span class="p">(</span><span class="n">kCGWindowListOptionOnScreenOnly</span> <span class="o">|</span> <span class="n">kCGWindowListExcludeDesktopElements</span><span class="p">,</span> <span class="n">kCGNullWindowID</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果窗口 <code>pid</code> 存在于 <code>_processes</code> 中，并且 <code>layer 为 0</code>，就表示它是实际有效的窗口，因此 _processes 里只需要保留 layer == 0 的项即可。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-objc" data-lang="objc"><span class="line"><span class="cl"><span class="kt">BOOL</span> <span class="n">hasValidWindow</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">windowList</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CFIndex</span> <span class="n">count</span> <span class="o">=</span> <span class="n">CFArrayGetCount</span><span class="p">(</span><span class="n">windowList</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="n">CFIndex</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">CFDictionaryRef</span> <span class="n">window</span> <span class="o">=</span> <span class="n">CFArrayGetValueAtIndex</span><span class="p">(</span><span class="n">windowList</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">CFNumberRef</span> <span class="n">windowPID</span> <span class="o">=</span> <span class="n">CFDictionaryGetValue</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">kCGWindowOwnerPID</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ownerPID</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">windowPID</span><span class="p">)</span> <span class="n">CFNumberGetValue</span><span class="p">(</span><span class="n">windowPID</span><span class="p">,</span> <span class="n">kCFNumberIntType</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ownerPID</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ownerPID</span> <span class="o">==</span> <span class="n">pid</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">CFNumberRef</span> <span class="n">layerNum</span> <span class="o">=</span> <span class="n">CFDictionaryGetValue</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">kCGWindowLayer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">layer</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">layerNum</span><span class="p">)</span> <span class="n">CFNumberGetValue</span><span class="p">(</span><span class="n">layerNum</span><span class="p">,</span> <span class="n">kCFNumberIntType</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">layer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">layer</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">hasValidWindow</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">CFRelease</span><span class="p">(</span><span class="n">windowList</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">hasValidWindow</span><span class="p">)</span> <span class="p">[</span><span class="n">indexesToRemove</span> <span class="nl">addIndex</span><span class="p">:</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="n">processes</span> <span class="nl">removeObjectsAtIndexes</span><span class="p">:</span><span class="n">indexesToRemove</span><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="沙箱注入器">沙箱注入器</h2>
+<p>实际上 <code>Dock.app</code> 作为系统核心应用，并没有开启沙箱，但我还是编写了一个沙箱注入器，用于处理开启了沙箱的其它 APP</p>
+<p>主流远程线程注入都是这个过程</p>
+<ol>
+<li>获取目标进程的控制权（task port）</li>
+<li>在目标进程中分配内存</li>
+<li>写入执行代码（shellcode）</li>
+<li>创建远程线程执行 shellcode</li>
+<li>shellcode 调用 dlopen 加载我们的 dylib</li>
+</ol>
+<p>但是 macOS 有沙箱机制的存在，调用 dlopen 加载我们的 dylib 通常会找不到路径。</p>
+<p>所以需要在加载我们的 dylib 之前开通沙箱权限，一般有三种方式</p>
+<ol>
+<li>
+<p>直接重签名权限移除沙箱、添加文件路径、修改二进制文件，这种方式非常粗暴，可能导致 APP 产生异常行为，尤其是和多进程相关的，非常不推荐</p>
+</li>
+<li>
+<p>找到一个即便开启了沙箱也可以访问到的公用路径，限制大，可能有权限问题，不推荐</p>
+</li>
+<li>
+<p>直接在 shellcode 中临时授权，这种方式不会破坏原有签名、不会修改二进制文件，即便出了问题也就是进程崩溃，只要重启一下进程就行了，比较安全</p>
+</li>
+</ol>
+<p>我这里使用方法 3</p>
+<p>构造 <code>loader.s</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl">        <span class="c1">// 在可写区域创建，只是为了免一次copy
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="na">.section</span> <span class="no">__DATA</span><span class="p">,</span><span class="no">__data</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 全局标签，主要为了计算偏移填充数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="na">.global</span> <span class="no">_m_start</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_end</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_pthread_create_addr</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_sandbox_consume_addr</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_dlopen_addr</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_payload_path</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.global</span> <span class="no">_m_sandbox_token</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// shellcode 开始地址，m_end - m_start 就可以获取大小
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nl">_m_start:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">sub</span> <span class="no">sp</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x30
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">stp</span> <span class="no">x29</span><span class="p">,</span> <span class="no">x30</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">add</span> <span class="no">x29</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">        <span class="nf">stur</span> <span class="no">w0</span><span class="p">,</span> <span class="p">[</span><span class="no">x29</span><span class="p">,</span> <span class="c1">#-0x4]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">str</span> <span class="no">x1</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x10]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">        <span class="nf">add</span> <span class="no">x0</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x8
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">mov</span> <span class="no">x8</span><span class="p">,</span> <span class="c1">#0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">str</span> <span class="no">x8</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x8]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">mov</span> <span class="no">x1</span><span class="p">,</span> <span class="no">x8</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x2</span><span class="p">,</span> <span class="no">m_thread_entry</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">paciza</span> <span class="no">x2</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">mov</span> <span class="no">x3</span><span class="p">,</span> <span class="no">x8</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">_m_pthread_create_addr</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">blr</span> <span class="no">x9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 0x79616265 写入一个自定义的标识到 x0 寄存器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">movz</span> <span class="no">x0</span><span class="p">,</span> <span class="c1">#0x6265
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">movk</span> <span class="no">x0</span><span class="p">,</span> <span class="c1">#0x7961, lsl #16
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 无限循环等待，主程序只要读取 x0 寄存器，就可以知道 shellcode 已经执行到这里，可以执行其它操作了
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">b</span> <span class="p">.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="na">.align</span> <span class="mi">4</span>
+</span></span><span class="line"><span class="cl"><span class="nl">m_thread_entry:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">pacibsp</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">sub</span> <span class="no">sp</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x30
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">stp</span> <span class="no">x29</span><span class="p">,</span> <span class="no">x30</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">add</span> <span class="no">x29</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">        <span class="nf">stur</span> <span class="no">w0</span><span class="p">,</span> <span class="p">[</span><span class="no">x29</span><span class="p">,</span> <span class="c1">#-0x4]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">str</span> <span class="no">x1</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x10]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x0</span><span class="p">,</span> <span class="no">_m_sandbox_token</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">_m_sandbox_consume_addr</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">blr</span> <span class="no">x9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nf">mov</span> <span class="no">x1</span><span class="p">,</span> <span class="c1">#1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">adr</span> <span class="no">x0</span><span class="p">,</span> <span class="no">_m_payload_path</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">adr</span> <span class="no">x9</span><span class="p">,</span> <span class="no">_m_dlopen_addr</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">ldr</span> <span class="no">x9</span><span class="p">,</span> <span class="p">[</span><span class="no">x9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">blr</span> <span class="no">x9</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nf">ldp</span> <span class="no">x29</span><span class="p">,</span> <span class="no">x30</span><span class="p">,</span> <span class="p">[</span><span class="no">sp</span><span class="p">,</span> <span class="c1">#0x20]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">add</span> <span class="no">sp</span><span class="p">,</span> <span class="no">sp</span><span class="p">,</span> <span class="c1">#0x30
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">retab</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">_m_pthread_create_addr:</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">_m_sandbox_consume_addr:</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">_m_dlopen_addr:</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.quad</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// payload_path 限制 128 字节，大部分时候足够
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">_m_payload_path:</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.zero</span> <span class="mi">128</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// token 中包含 payload_path 所以长一点，限制 256 字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="na">.align</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nl">_m_sandbox_token:</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.zero</span> <span class="mi">256</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// shellcode 结束地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nl">_m_end:</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>引入标签计算偏移</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_start</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_end</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_pthread_create_addr</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_sandbox_consume_addr</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_dlopen_addr</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_payload_path</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">m_sandbox_token</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">SHELLCODE</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">m_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">SHELLCODE_SIZE</span> <span class="o">=</span> <span class="n">m_end</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">PTHREAD_CREATE</span> <span class="o">=</span> <span class="n">m_pthread_create_addr</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">SANDBOX_CONSUME</span> <span class="o">=</span> <span class="n">m_sandbox_consume_addr</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">DLOPEN</span> <span class="o">=</span> <span class="n">m_dlopen_addr</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">PAYLOAD_PATH</span> <span class="o">=</span> <span class="n">m_payload_path</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uintptr_t</span> <span class="n">SANDBOX_TOKEN</span> <span class="o">=</span> <span class="n">m_sandbox_token</span> <span class="o">-</span> <span class="n">m_start</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>获取 Task Port</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">task_for_pid</span><span class="p">(</span><span class="nf">mach_task_self</span><span class="p">(),</span> <span class="n">pid</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">task</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>分配内存</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stack</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">stack_contents</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="nf">vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">VM_PROT_READ</span> <span class="o">|</span> <span class="n">VM_PROT_WRITE</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>签发沙箱 token</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">sandbox_token</span> <span class="o">=</span> <span class="nf">sandbox_extension_issue_file</span><span class="p">(</span><span class="n">APP_SANDBOX_READ</span><span class="p">,</span> <span class="n">payload_path</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修补 shellcode</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="n">pcfmt_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;pthread_create_from_mach_thread&#34;</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="n">dlopen_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;dlopen&#34;</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="n">sandbox_consume_address</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="nf">ptrauth_strip</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">dlsym</span><span class="p">(</span><span class="n">RTLD_DEFAULT</span><span class="p">,</span> <span class="s">&#34;sandbox_extension_consume&#34;</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">ptrauth_key_function_pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">PTHREAD_CREATE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pcfmt_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">SANDBOX_CONSUME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sandbox_consume_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">DLOPEN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dlopen_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">PAYLOAD_PATH</span><span class="p">,</span> <span class="n">payload_path</span><span class="p">,</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">payload_path</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">memcpy</span><span class="p">(</span><span class="n">SHELLCODE</span> <span class="o">+</span> <span class="n">SANDBOX_TOKEN</span><span class="p">,</span> <span class="n">sandbox_token</span><span class="p">,</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">sandbox_token</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>写入 shellcode</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">mach_vm_allocate</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">code</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">,</span> <span class="n">VM_FLAGS_ANYWHERE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mach_vm_write</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="p">(</span><span class="kt">vm_address_t</span><span class="p">)</span><span class="n">SHELLCODE</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">vm_protect</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">SHELLCODE_SIZE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">VM_PROT_EXECUTE</span> <span class="o">|</span> <span class="n">VM_PROT_READ</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>设置线程状态并执行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 设置 PC（程序计数器）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">__darwin_arm_thread_state64_set_pc_fptr</span><span class="p">(</span><span class="n">thread_state</span><span class="p">,</span> <span class="nf">ptrauth_sign_unauthenticated</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">code</span><span class="p">,</span> <span class="n">ptrauth_key_asia</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="c1">// 设置 SP（栈指针）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">__darwin_arm_thread_state64_set_sp</span><span class="p">(</span><span class="n">thread_state</span><span class="p">,</span> <span class="n">stack</span> <span class="o">+</span> <span class="p">(</span><span class="n">stack_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">thread_create</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">&amp;</span><span class="kr">thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">thread_convert_thread_state</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">thread</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">      <span class="mi">2</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">      <span class="n">thread_flavor</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">thread_state</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="n">thread_flavor_count</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">machine_thread_state</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="o">&amp;</span><span class="n">machine_thread_flavor_count</span>
+</span></span><span class="line"><span class="cl">  <span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">thread_create_running</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">thread_flavor</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">machine_thread_state</span><span class="p">,</span> <span class="n">machine_thread_flavor_count</span><span class="p">,</span> <span class="o">&amp;</span><span class="kr">thread</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>检查 <code>x0</code> 寄存器判断 shellcode 是否执行完成</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">thread_get_state</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span> <span class="n">thread_flavor</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">thread_state</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">thread_flavor_count</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">thread_state</span><span class="p">.</span><span class="n">__x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x79616265</span><span class="p">)</span> <span class="c1">// 执行完成
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 如果执行完成就直接杀死 shellcode 线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">thread_terminate</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="享受">享受</h2>
+<p>当然还有很多改进的点，例如 <code>payload_path</code> 和 <code>token</code> 可以直接传一个指针而不是限定长度，这样可以缩小 shellcode 大小；在沙箱授权之前可以检查进程是否已经开启了沙箱,更为严谨，虽然即便没有开启沙箱但是添加了沙箱授权也不会有什么问题就是</p>
+<p>完整代码: 去我的 <a href="https://github.com/kekeimiku">Github</a> 中自己找吧，写这篇文章的时候还没有整合到单独仓库中 😁</p>
+<p>感谢:</p>
+<p><a href="https://github.com/koekeishiya">https://github.com/koekeishiya</a>
+<a href="https://github.com/jslegendre">https://github.com/jslegendre</a></p>
+<p>提供了无沙箱授权的基本注入器参考</p>
+<p><a href="https://github.com/opa334">https://github.com/opa334</a></p>
+<p>从大佬的代码中第一次知道沙箱注入的操作</p>
+<p><a href="https://github.com/GRAVITYDIV10">https://github.com/GRAVITYDIV10</a></p>
+<p>对 C/ASM 方面的帮助</p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">kk</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2025-11-23
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E9%80%86%E5%90%91/">逆向</a>
+          <a href="/tags/%E5%86%85%E5%AD%98/">内存</a>
+          <a href="/tags/arm64e/">ARM64e</a>
+          <a href="/tags/c/">C</a>
+          <a href="/tags/assembly/">Assembly</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/lucky_speeder_notes/">
+            <span class="next-text nav-default">LuckySpeeder-解</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:kekelanact@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/kekeimiku" class="iconfont icon-github" title="github"></a>
+  
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+<script>
+  function createCopyButton(highlightDiv) {
+    const div = document.createElement("div");
+    div.className = "copy-code";
+    div.innerText = "Copy";
+    div.addEventListener("click", () =>
+      copyCodeToClipboard(div, highlightDiv)
+    );
+    addCopyButtonToDom(div, highlightDiv);
+  }
+
+  async function copyCodeToClipboard(button, highlightDiv) {
+    const codeToCopy = highlightDiv.querySelector(":last-child > .chroma > code")
+      .innerText;
+    await navigator.clipboard.writeText(codeToCopy);
+    button.blur();
+    button.innerText = "Copied!";
+    setTimeout(() => button.innerText = "Copy", 2000);
+  }
+
+  function addCopyButtonToDom(button, highlightDiv) {
+    highlightDiv.insertBefore(button, highlightDiv.firstChild);
+    const wrapper = document.createElement("div");
+    wrapper.className = "highlight-wrapper";
+    highlightDiv.parentNode.insertBefore(wrapper, highlightDiv);
+    wrapper.appendChild(highlightDiv);
+  }
+
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(!isMobile){
+     document.querySelectorAll(".highlight").forEach((highlightDiv) => createCopyButton(highlightDiv));
+  }
+</script>  
+
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ARM64e on KK</title>
+    <link>/tags/arm64e/</link>
+    <description>Recent content in ARM64e on KK</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 23 Nov 2025 13:15:11 +0800</lastBuildDate>
+    <atom:link href="/tags/arm64e/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>逆向修改 macOS Alt&#43;Tab 行为 &amp;&amp; 编写沙箱注入器</title>
+      <link>/post/mac_alt_tab_fix/</link>
+      <pubDate>Sun, 23 Nov 2025 13:15:11 +0800</pubDate>
+      <guid>/post/mac_alt_tab_fix/</guid>
+      <description>&lt;p&gt;众所周知 macOS 默认的 Alt/Command+Tab 行为十分智障，已经被吐槽好些年了，有些 APP 没有打开窗口，依然会显示在切换列表中，切换过去的时候什么也不会发生。&lt;/p&gt;&#xA;&lt;p&gt;虽然有很多第三方软件能解决这个问题，但它们通常是自行实现一套方案，原有系统功能并没有得到改善。我更倾向于使用系统自带的工具。&lt;/p&gt;&#xA;&lt;p&gt;我预期的行为是 Alt/Command+Tab 列表中应该只显示有窗口存在的 APP，并且每个工作区应该仅持有当前工作区 APP 的列表，我不喜欢 Alt/Command+Tab 切换 APP 会切换到其它工作区以及 &amp;ldquo;无事发生&amp;rdquo; 的行为。&lt;/p&gt;&#xA;&lt;p&gt;系统版本: macOS 26.1 (25B78)&lt;/p&gt;&#xA;&lt;p&gt;这篇文章记录修改过程。&lt;/p&gt;&#xA;&lt;p&gt;主要是两个功能:&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;从切换列表中剔除所有没有可见窗口的 App。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;各工作区独立管理自己的 App 切换列表，不会再跳到其他工作区。&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ol&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Go-Rust 编译器优化对比 - KK</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="kk" /><meta name="description" content="Go release模式 编译为x86-64
+我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式
+1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32, value uint16) { for i := 0; i &lt;= 15; i&#43;&#43; { bitToSet := ((value &gt;&gt; i) &amp; 1) != 0 *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) if bitToSet { *reg |= 1 &lt;&lt; (i &#43; 5) } else { *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) } } } 它生成的汇编是什么样的呢？
+" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.152.2 with theme even" />
+
+
+<link rel="canonical" href="/post/goasm1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2627c65f163ff60fe34f44400e3a685b143a66f46cd0180cab9f234e356fea3b.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:url" content="/post/goasm1/">
+  <meta property="og:site_name" content="KK">
+  <meta property="og:title" content="Go-Rust 编译器优化对比">
+  <meta property="og:description" content="Go release模式 编译为x86-64
+我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式
+1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32, value uint16) { for i := 0; i &lt;= 15; i&#43;&#43; { bitToSet := ((value &gt;&gt; i) &amp; 1) != 0 *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) if bitToSet { *reg |= 1 &lt;&lt; (i &#43; 5) } else { *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) } } } 它生成的汇编是什么样的呢？">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2023-06-26T10:46:46+08:00">
+    <meta property="article:modified_time" content="2023-06-26T10:46:46+08:00">
+    <meta property="article:tag" content="Rust">
+    <meta property="article:tag" content="Go">
+
+  <meta itemprop="name" content="Go-Rust 编译器优化对比">
+  <meta itemprop="description" content="Go release模式 编译为x86-64
+我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式
+1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32, value uint16) { for i := 0; i &lt;= 15; i&#43;&#43; { bitToSet := ((value &gt;&gt; i) &amp; 1) != 0 *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) if bitToSet { *reg |= 1 &lt;&lt; (i &#43; 5) } else { *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) } } } 它生成的汇编是什么样的呢？">
+  <meta itemprop="datePublished" content="2023-06-26T10:46:46+08:00">
+  <meta itemprop="dateModified" content="2023-06-26T10:46:46+08:00">
+  <meta itemprop="wordCount" content="1018">
+  <meta itemprop="keywords" content="Rust,Go">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go-Rust 编译器优化对比">
+  <meta name="twitter:description" content="Go release模式 编译为x86-64
+我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式
+1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32, value uint16) { for i := 0; i &lt;= 15; i&#43;&#43; { bitToSet := ((value &gt;&gt; i) &amp; 1) != 0 *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) if bitToSet { *reg |= 1 &lt;&lt; (i &#43; 5) } else { *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) } } } 它生成的汇编是什么样的呢？">
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">KK</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/ss/">
+        <li class="mobile-menu-item">碎碎念</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友接</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">KK</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/ss/">碎碎念</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/link/">友接</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+<script>
+  (function(){
+      if(''){
+          if (prompt('请输入文章密码') !== ''){
+              alert('密码错误！');
+              history.back();
+          }
+      }
+  })();
+</script>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Go-Rust 编译器优化对比</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-06-26 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+            </div>
+          <span class="more-meta"> 约 1018 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#go">Go</a></li>
+    <li><a href="#rust">Rust</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="go">Go</h1>
+<p>release模式 编译为x86-64</p>
+<p>我不知道Go除了使用 <code>go build file.go</code> 是否还有其它命令才能真正编译为release模式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">setBit1</span><span class="p">(</span><span class="nx">reg</span><span class="w"> </span><span class="o">*</span><span class="kt">uint32</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="kt">uint16</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">15</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">bitToSet</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">((</span><span class="nx">value</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="o">*</span><span class="nx">reg</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="p">^(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">bitToSet</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="o">*</span><span class="nx">reg</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="o">*</span><span class="nx">reg</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="p">^(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>它生成的汇编是什么样的呢？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl">        <span class="nf">TEXT</span>    <span class="no">main.setBit1</span><span class="p">(</span><span class="no">SB</span><span class="p">),</span> <span class="no">NOSPLIT</span><span class="err">|</span><span class="no">ABIInternal</span><span class="p">,</span> <span class="no">$8-16</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">SUBQ</span>    <span class="no">$8</span><span class="p">,</span> <span class="no">SP</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVQ</span>    <span class="no">BP</span><span class="p">,</span> <span class="p">(</span><span class="no">SP</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">LEAQ</span>    <span class="p">(</span><span class="no">SP</span><span class="p">),</span> <span class="no">BP</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$0</span><span class="p">,</span> <span class="no">gclocals</span><span class="err">·</span><span class="no">wgcWObbY2HYnK2SU</span><span class="err">/</span><span class="no">U22lA</span><span class="err">==</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$1</span><span class="p">,</span> <span class="no">gclocals</span><span class="err">·</span><span class="no">J5F</span><span class="err">+</span><span class="mi">7</span><span class="no">Qw7O7ve2QcWC7DpeQ</span><span class="err">==</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$5</span><span class="p">,</span> <span class="no">main.setBit1.arginfo1</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$6</span><span class="p">,</span> <span class="no">main.setBit1.argliveinfo</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">PCDATA</span>  <span class="no">$3</span><span class="p">,</span> <span class="no">$1</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">XORL</span>    <span class="no">CX</span><span class="p">,</span> <span class="no">CX</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">JMP</span>     <span class="no">main_setBit1_pc22</span>
+</span></span><span class="line"><span class="cl"><span class="nl">main_setBit1_pc16:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">LEAQ</span>    <span class="mi">1</span><span class="p">(</span><span class="no">R9</span><span class="p">),</span> <span class="no">CX</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVL</span>    <span class="no">DX</span><span class="p">,</span> <span class="no">BX</span>
+</span></span><span class="line"><span class="cl"><span class="nl">main_setBit1_pc22:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">CMPQ</span>    <span class="no">CX</span><span class="p">,</span> <span class="no">$15</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">JGT</span>     <span class="no">main_setBit1_pc103</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVL</span>    <span class="no">BX</span><span class="p">,</span> <span class="no">DX</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">SHRW</span>    <span class="no">CX</span><span class="p">,</span> <span class="no">BX</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVL</span>    <span class="p">(</span><span class="no">AX</span><span class="p">),</span> <span class="no">SI</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">LEAQ</span>    <span class="mi">5</span><span class="p">(</span><span class="no">CX</span><span class="p">),</span> <span class="no">DI</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">TESTQ</span>   <span class="no">DI</span><span class="p">,</span> <span class="no">DI</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">JLT</span>     <span class="no">main_setBit1_pc112</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">CMPQ</span>    <span class="no">DI</span><span class="p">,</span> <span class="no">$32</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">SBBL</span>    <span class="no">R8</span><span class="p">,</span> <span class="no">R8</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVQ</span>    <span class="no">CX</span><span class="p">,</span> <span class="no">R9</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVQ</span>    <span class="no">DI</span><span class="p">,</span> <span class="no">CX</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVL</span>    <span class="no">$1</span><span class="p">,</span> <span class="no">R10</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">SHLL</span>    <span class="no">CX</span><span class="p">,</span> <span class="no">R10</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">ANDL</span>    <span class="no">R8</span><span class="p">,</span> <span class="no">R10</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVL</span>    <span class="no">R10</span><span class="p">,</span> <span class="no">DI</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">NOTL</span>    <span class="no">R10</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">ANDL</span>    <span class="no">SI</span><span class="p">,</span> <span class="no">R10</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVL</span>    <span class="no">R10</span><span class="p">,</span> <span class="p">(</span><span class="no">AX</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">TESTW</span>   <span class="no">$1</span><span class="p">,</span> <span class="no">BX</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">JEQ</span>     <span class="no">main_setBit1_pc98</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">ORL</span>     <span class="no">DI</span><span class="p">,</span> <span class="no">R10</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVL</span>    <span class="no">R10</span><span class="p">,</span> <span class="p">(</span><span class="no">AX</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">NOP</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">JMP</span>     <span class="no">main_setBit1_pc16</span>
+</span></span><span class="line"><span class="cl"><span class="nl">main_setBit1_pc98:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVL</span>    <span class="no">R10</span><span class="p">,</span> <span class="p">(</span><span class="no">AX</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">JMP</span>     <span class="no">main_setBit1_pc16</span>
+</span></span><span class="line"><span class="cl"><span class="nl">main_setBit1_pc103:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">MOVQ</span>    <span class="p">(</span><span class="no">SP</span><span class="p">),</span> <span class="no">BP</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">ADDQ</span>    <span class="no">$8</span><span class="p">,</span> <span class="no">SP</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">RET</span>
+</span></span><span class="line"><span class="cl"><span class="nl">main_setBit1_pc112:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">PCDATA</span>  <span class="no">$1</span><span class="p">,</span> <span class="no">$1</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">CALL</span>    <span class="no">runtime.panicshift</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">XCHGL</span>   <span class="no">AX</span><span class="p">,</span> <span class="no">AX</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">TEXT</span>    <span class="no">main.main</span><span class="p">(</span><span class="no">SB</span><span class="p">),</span> <span class="no">NOSPLIT</span><span class="err">|</span><span class="no">ABIInternal</span><span class="p">,</span> <span class="no">$0-0</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$0</span><span class="p">,</span> <span class="no">gclocals</span><span class="err">·</span><span class="no">g2BeySu</span><span class="err">+</span><span class="no">wFnoycgXfElmcg</span><span class="err">==</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$1</span><span class="p">,</span> <span class="no">gclocals</span><span class="err">·</span><span class="no">g2BeySu</span><span class="err">+</span><span class="no">wFnoycgXfElmcg</span><span class="err">==</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">RET</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><a href="https://go.godbolt.org/z/79n33vMh8">https://go.godbolt.org/z/79n33vMh8</a></p>
+<p>可以看到Go似乎只使用了普通指令</p>
+<p><code>JMP main_setBit1_pc16</code> 会执行无限循环,直到满足条件<code>JGT main_setBit1_pc103</code>时才退出，也就是cpu会循环15次执行这几条指令。</p>
+<p>这实际上不符合预期，这个循环应该可以被编译器优化掉以获得更好的性能。一般来说，CPU需要执行的指令数越少，性能通常会更好。</p>
+<h1 id="rust">Rust</h1>
+<p>等效实现 编译为x86-64:</p>
+<p>编译命令 <code>cargo build --release</code></p>
+<p>这是rust默认的release模式，实际上rust默认的release模式比较鸡肋，真正的项目中应该至少加入 <code>lto = true</code> <code>codegen-units = 1</code>两个参数，不过对于这篇文章中的小函数不影响。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">set_bit1</span><span class="p">(</span><span class="n">reg</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="kt">u32</span><span class="p">,</span><span class="w"> </span><span class="n">value</span>: <span class="kt">u16</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..=</span><span class="mi">15</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">bit_to_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">((</span><span class="n">value</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="o">*</span><span class="n">reg</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="o">*</span><span class="n">reg</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="n">bit_to_set</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">u32</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>它生成的汇编为:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">.LCPI0_0:</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.short</span>  <span class="mi">32</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.short</span>  <span class="mi">64</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.short</span>  <span class="mi">128</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.short</span>  <span class="mi">256</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.short</span>  <span class="mi">512</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.short</span>  <span class="mi">1024</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.short</span>  <span class="mi">2048</span>
+</span></span><span class="line"><span class="cl">        <span class="na">.short</span>  <span class="mi">4096</span>
+</span></span><span class="line"><span class="cl"><span class="nl">example:</span><span class="err">:</span><span class="nl">set_bit1:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="p">-</span><span class="mi">2097121</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">and</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">rdi</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">movd</span>    <span class="no">xmm0</span><span class="p">,</span> <span class="no">esi</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">psllw</span>   <span class="no">xmm0</span><span class="p">,</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">pshuflw</span> <span class="no">xmm0</span><span class="p">,</span> <span class="no">xmm0</span><span class="p">,</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">pshufd</span>  <span class="no">xmm0</span><span class="p">,</span> <span class="no">xmm0</span><span class="p">,</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">shl</span>     <span class="no">esi</span><span class="p">,</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">mov</span>     <span class="no">ecx</span><span class="p">,</span> <span class="no">esi</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">and</span>     <span class="no">ecx</span><span class="p">,</span> <span class="mi">8192</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">pand</span>    <span class="no">xmm0</span><span class="p">,</span> <span class="no">xmmword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">rip</span> <span class="err">+</span> <span class="no">.LCPI0_0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">pxor</span>    <span class="no">xmm1</span><span class="p">,</span> <span class="no">xmm1</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">movdqa</span>  <span class="no">xmm2</span><span class="p">,</span> <span class="no">xmm0</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">punpckhwd</span>       <span class="no">xmm2</span><span class="p">,</span> <span class="no">xmm1</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">punpcklwd</span>       <span class="no">xmm0</span><span class="p">,</span> <span class="no">xmm1</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">por</span>     <span class="no">xmm0</span><span class="p">,</span> <span class="no">xmm2</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">pshufd</span>  <span class="no">xmm1</span><span class="p">,</span> <span class="no">xmm0</span><span class="p">,</span> <span class="mi">238</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">por</span>     <span class="no">xmm1</span><span class="p">,</span> <span class="no">xmm0</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">pshufd</span>  <span class="no">xmm0</span><span class="p">,</span> <span class="no">xmm1</span><span class="p">,</span> <span class="mi">85</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">por</span>     <span class="no">xmm0</span><span class="p">,</span> <span class="no">xmm1</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">movd</span>    <span class="no">edx</span><span class="p">,</span> <span class="no">xmm0</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">mov</span>     <span class="no">r8d</span><span class="p">,</span> <span class="no">esi</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">and</span>     <span class="no">r8d</span><span class="p">,</span> <span class="mi">49152</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">or</span>      <span class="no">r8d</span><span class="p">,</span> <span class="no">ecx</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">mov</span>     <span class="no">ecx</span><span class="p">,</span> <span class="no">esi</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">and</span>     <span class="no">ecx</span><span class="p">,</span> <span class="mi">983040</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">or</span>      <span class="no">ecx</span><span class="p">,</span> <span class="no">r8d</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">or</span>      <span class="no">ecx</span><span class="p">,</span> <span class="no">edx</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">and</span>     <span class="no">ecx</span><span class="p">,</span> <span class="p">-</span><span class="mi">1048577</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">or</span>      <span class="no">ecx</span><span class="p">,</span> <span class="no">eax</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">and</span>     <span class="no">esi</span><span class="p">,</span> <span class="mi">1048576</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">or</span>      <span class="no">esi</span><span class="p">,</span> <span class="no">ecx</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">rdi</span><span class="p">],</span> <span class="no">esi</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">ret</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><a href="https://rust.godbolt.org/z/aWKEqvnoP">https://rust.godbolt.org/z/aWKEqvnoP</a></p>
+<p>看起来rust会自动在支持的平台上自动使用部分高级指令，在 x86-64 中默认使用了sse2。把整个循环直接优化掉了，cpu只会执行这40行左右的代码。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">kk</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-06-26
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/rust/">Rust</a>
+          <a href="/tags/go/">Go</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/pointersearch1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">编写一个通用指针搜索器（1）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/nat_hole_punching/">
+            <span class="next-text nav-default"></span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:kekelanact@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/kekeimiku" class="iconfont icon-github" title="github"></a>
+  
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+<script>
+  function createCopyButton(highlightDiv) {
+    const div = document.createElement("div");
+    div.className = "copy-code";
+    div.innerText = "Copy";
+    div.addEventListener("click", () =>
+      copyCodeToClipboard(div, highlightDiv)
+    );
+    addCopyButtonToDom(div, highlightDiv);
+  }
+
+  async function copyCodeToClipboard(button, highlightDiv) {
+    const codeToCopy = highlightDiv.querySelector(":last-child > .chroma > code")
+      .innerText;
+    await navigator.clipboard.writeText(codeToCopy);
+    button.blur();
+    button.innerText = "Copied!";
+    setTimeout(() => button.innerText = "Copy", 2000);
+  }
+
+  function addCopyButtonToDom(button, highlightDiv) {
+    highlightDiv.insertBefore(button, highlightDiv.firstChild);
+    const wrapper = document.createElement("div");
+    wrapper.className = "highlight-wrapper";
+    highlightDiv.parentNode.insertBefore(wrapper, highlightDiv);
+    wrapper.appendChild(highlightDiv);
+  }
+
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(!isMobile){
+     document.querySelectorAll(".highlight").forEach((highlightDiv) => createCopyButton(highlightDiv));
+  }
+</script>  
+
+
+</body>
+</html>

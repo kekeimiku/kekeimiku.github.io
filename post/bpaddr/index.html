@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>是什么(写入/访问)了这个地址 - KK</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="kk" /><meta name="description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。
+" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.152.2 with theme even" />
+
+
+<link rel="canonical" href="/post/bpaddr/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2627c65f163ff60fe34f44400e3a685b143a66f46cd0180cab9f234e356fea3b.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:url" content="/post/bpaddr/">
+  <meta property="og:site_name" content="KK">
+  <meta property="og:title" content="是什么(写入/访问)了这个地址">
+  <meta property="og:description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2024-09-14T15:53:21+08:00">
+    <meta property="article:modified_time" content="2024-09-14T15:53:21+08:00">
+    <meta property="article:tag" content="逆向">
+    <meta property="article:tag" content="内存">
+    <meta property="article:tag" content="Rust">
+    <meta property="article:tag" content="X86">
+
+  <meta itemprop="name" content="是什么(写入/访问)了这个地址">
+  <meta itemprop="description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。">
+  <meta itemprop="datePublished" content="2024-09-14T15:53:21+08:00">
+  <meta itemprop="dateModified" content="2024-09-14T15:53:21+08:00">
+  <meta itemprop="wordCount" content="1079">
+  <meta itemprop="keywords" content="逆向,内存,Rust,X86">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="是什么(写入/访问)了这个地址">
+  <meta name="twitter:description" content="前言 这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。">
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">KK</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/ss/">
+        <li class="mobile-menu-item">碎碎念</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友接</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">KK</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/ss/">碎碎念</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/link/">友接</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+<script>
+  (function(){
+      if(''){
+          if (prompt('请输入文章密码') !== ''){
+              alert('密码错误！');
+              history.back();
+          }
+      }
+  })();
+</script>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">是什么(写入/访问)了这个地址</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-09-14 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+            </div>
+          <span class="more-meta"> 约 1079 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#无知就是幸福">无知就是幸福</a></li>
+    <li><a href="#重置一切">重置一切</a>
+      <ul>
+        <li><a href="#1-缓慢的反汇编">1. 缓慢的反汇编。</a></li>
+        <li><a href="#2-获取内存操作的寄存器地址">2. 获取内存操作的寄存器地址</a></li>
+        <li><a href="#3-实现只读断点">3. 实现只读断点</a></li>
+      </ul>
+    </li>
+    <li><a href="#最终效果">最终效果</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="前言">前言</h1>
+<p>这篇文章只是记录我在编写程序时遇到问题的解决过程，文章最下方会放代码链接。</p>
+<h1 id="无知就是幸福">无知就是幸福</h1>
+<p>最近使用 <a href="https://github.com/korcankaraokcu/PINCE">PINCE</a> 的时候，使用 “找出是什么(写入/读取/访问)了改地址” 功能，由于断点命中次数太多，会造成游戏极其卡顿(从60帧降低到不足10帧)，脑抽第一时间以为是Python太慢了造成的。</p>
+<p>于是我准备用 Rust 自己实现这个功能。最开始想法非常简单：</p>
+<ol>
+<li>
+<p>只需要使用Linux的 ptrace 即可轻松实现断点功能。</p>
+</li>
+<li>
+<p>通过 /proc/pid/maps 查询 IP 寄存器储存的地址所在的内存区域。</p>
+</li>
+<li>
+<p>反编译获取附近指令，猜测内存操作数，再查询对应寄存器储存的数值即可。</p>
+</li>
+</ol>
+<p>但实际上，不知为何，性能非常差劲，依然让游戏卡到几乎没法正常运行。通过互联网上一些相关搜索发现：</p>
+<ul>
+<li>由于 ptrace 内部是系统调用机制，需要在内核态和用户态切换。当事件数量比较多时，繁忙的切换必然会影响原有服务的性能；</li>
+</ul>
+<p>很多人只看到了 ptrace 简单易用，功能还多的好处，却忽略了它对进程性能带来的影响。实际上，我只是需要一个断点，于是发现了 perf。相对于 ptrace 来说，perf trace 基于内核事件，自然要比进程跟踪的性能好很多。使用 perf 还有一个潜在的好处，它目前无法被轻易检测，可以绕过大部分 AC (反作弊)。</p>
+<h1 id="重置一切">重置一切</h1>
+<p>使用 perf 重新实现断点功能非常容易，我不想解释太多，总之，现在我又遇到了其它问题。现在我的程序虽然对游戏性能 几乎/完全 没有肉眼可见的性能影响，但依然有需要优化的地方，例如：</p>
+<h2 id="1-缓慢的反汇编">1. 缓慢的反汇编。</h2>
+<p><img src="/assets/bench-ath.png" alt="img1"></p>
+<p>没错，我使用的就是这个几乎性能最差，但是业界使用量最大的 Capstone 完成了我需要的功能。这导致我需要数秒的时间才能获取到一个断点的数据，然而实际上我的断点每秒可能命中几十数百上千次。它的性能让我几乎没法用。</p>
+<p>于是使用了看起来性能最好的 Iced 重构代码，幸运的是，Iced 不仅非常成熟而且性能非常好，使用它后获得了极大的性能改善。不过，后来我发现实际上我只是需要 IP 附近的几百个字节，使用 Capstone 还是 Iced 根本没有体感上的性能差距，但快一些总是好的。</p>
+<p>Yaxpeax 虽然也很快，但是看起来成熟度远远不如 Capstone/Iced，所以没有尝试。</p>
+<p>以下是提到的几个反汇编库的链接</p>
+<p>Capstone: <a href="https://github.com/capstone-engine/capstone">https://github.com/capstone-engine/capstone</a></p>
+<p>Iced: <a href="https://github.com/icedland/iced">https://github.com/icedland/iced</a></p>
+<p>Yaxpeax: <a href="https://github.com/iximeow/yaxpeax-x86">https://github.com/iximeow/yaxpeax-x86</a></p>
+<h2 id="2-获取内存操作的寄存器地址">2. 获取内存操作的寄存器地址</h2>
+<p>最开始我甚至想字节解析反汇编的字符串，其中 [] 中间就是内存操作寄存器的名字。但是实际上只需要遍历操作计数然后获取寄存器类型，如果是内存类型，就可以直接查询断点数据获取地址。</p>
+<h2 id="3-实现只读断点">3. 实现只读断点</h2>
+<p><img src="/assets/intel_reg.png" alt="img2"></p>
+<p>根据 intel 官方手册所说，x86_64 硬件根本不支持只读断点。但是有一种围魏救赵的办法，可以假装支持只读断点。</p>
+<p>办法也非常简单，因为 x86_64 支持设置 写入/读写 断点，所以只需要同时使用两个断点的数据，即使用<code>写入</code>的数据，去过滤<code>读写</code>中的<code>写</code>，即可实现只读断点功能。</p>
+<h1 id="最终效果">最终效果</h1>
+<p><img src="/assets/ptr_watch.png" alt="img3"></p>
+<p>完整代码: <a href="https://github.com/kekeimiku/PointerWatcher-X">https://github.com/kekeimiku/PointerWatcher-X</a></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">kk</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-09-14
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E9%80%86%E5%90%91/">逆向</a>
+          <a href="/tags/%E5%86%85%E5%AD%98/">内存</a>
+          <a href="/tags/rust/">Rust</a>
+          <a href="/tags/x86/">X86</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/rust-hackdev-ios/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Rust调用ios私有API</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/pointersearch2/">
+            <span class="next-text nav-default">编写一个通用指针搜索器（2）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:kekelanact@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/kekeimiku" class="iconfont icon-github" title="github"></a>
+  
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+<script>
+  function createCopyButton(highlightDiv) {
+    const div = document.createElement("div");
+    div.className = "copy-code";
+    div.innerText = "Copy";
+    div.addEventListener("click", () =>
+      copyCodeToClipboard(div, highlightDiv)
+    );
+    addCopyButtonToDom(div, highlightDiv);
+  }
+
+  async function copyCodeToClipboard(button, highlightDiv) {
+    const codeToCopy = highlightDiv.querySelector(":last-child > .chroma > code")
+      .innerText;
+    await navigator.clipboard.writeText(codeToCopy);
+    button.blur();
+    button.innerText = "Copied!";
+    setTimeout(() => button.innerText = "Copy", 2000);
+  }
+
+  function addCopyButtonToDom(button, highlightDiv) {
+    highlightDiv.insertBefore(button, highlightDiv.firstChild);
+    const wrapper = document.createElement("div");
+    wrapper.className = "highlight-wrapper";
+    highlightDiv.parentNode.insertBefore(wrapper, highlightDiv);
+    wrapper.appendChild(highlightDiv);
+  }
+
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(!isMobile){
+     document.querySelectorAll(".highlight").forEach((highlightDiv) => createCopyButton(highlightDiv));
+  }
+</script>  
+
+
+</body>
+</html>

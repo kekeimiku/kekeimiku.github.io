@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>编程 on KK</title>
+    <link>/tags/%E7%BC%96%E7%A8%8B/</link>
+    <description>Recent content in 编程 on KK</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 09 Dec 2024 17:28:17 +0800</lastBuildDate>
+    <atom:link href="/tags/%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rust 吐槽</title>
+      <link>/post/fuckrust/</link>
+      <pubDate>Mon, 09 Dec 2024 17:28:17 +0800</pubDate>
+      <guid>/post/fuckrust/</guid>
+      <description>&lt;p&gt;此文章可能引起不适，如果有 Rust 小鬼路过千万千万千万不要试图进来。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>lazy_static! { static ref My } - KK</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="kk" /><meta name="description" content="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.152.2 with theme even" />
+
+
+<link rel="canonical" href="/post/lazy_static_my/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2627c65f163ff60fe34f44400e3a685b143a66f46cd0180cab9f234e356fea3b.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:url" content="/post/lazy_static_my/">
+  <meta property="og:site_name" content="KK">
+  <meta property="og:title" content="lazy_static! { static ref My }">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2023-09-06T19:39:52+08:00">
+    <meta property="article:modified_time" content="2023-09-06T19:39:52+08:00">
+    <meta property="article:tag" content="生活">
+
+  <meta itemprop="name" content="lazy_static! { static ref My }">
+  <meta itemprop="datePublished" content="2023-09-06T19:39:52+08:00">
+  <meta itemprop="dateModified" content="2023-09-06T19:39:52+08:00">
+  <meta itemprop="wordCount" content="1365">
+  <meta itemprop="keywords" content="生活">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="lazy_static! { static ref My }">
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">KK</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/ss/">
+        <li class="mobile-menu-item">碎碎念</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友接</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">KK</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/ss/">碎碎念</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/link/">友接</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+<script>
+  (function(){
+      if('1001'){
+          if (prompt('请输入文章密码') !== '1001'){
+              alert('密码错误！');
+              history.back();
+          }
+      }
+  })();
+</script>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">lazy_static! { static ref My }</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-09-06 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%94%9F%E6%B4%BB/"> 生活 </a>
+            </div>
+          <span class="more-meta"> 约 1365 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#过去---混乱的职业生涯">过去 - 混乱的职业生涯</a></li>
+    <li><a href="#现在---反思">现在 - 反思</a></li>
+    <li><a href="#未来---愿望">未来 - 愿望</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>打工到现在，已经记不清是七年还是八年了，回顾过去走过的路浑浑噩噩（无奈）。还是想思考一下自己究竟干了什么，该干什么。</p>
+</blockquote>
+<h1 id="过去---混乱的职业生涯">过去 - 混乱的职业生涯</h1>
+<ul>
+<li>
+<p>小时候：老家位于黑龙江一处农场，出生在一个代号叫48的农村联队，从小和爷爷奶奶以及其它亲戚生活，吃百家饭长大，父亲常年在外打工，母亲是人贩子，刚出生的时候便把我抛弃了，从小到大没有见过母亲，搞得我爸精神也有点问题，经常自言自语骂我妈。导致我从小就喜欢乱想，不喜欢与人交流。</p>
+</li>
+<li>
+<p>初中：家里没什么钱，成绩也不怎么样，家里说辍学就辍学了，当时没想太多，基本就是在家玩手机，上网吧（赊账&hellip;），干农活，就这么待了差不多一年。</p>
+</li>
+<li>
+<p>辍学一年后：随叔叔，父亲还有姑父去往包头，投奔我大爷包的工地谋生，干了一年多，开始慢慢思考为什么老家有些年轻人宁可在家种地，也不走出去，很多人一年的收入可能远不如去城市打工几个月。后来想明白了，底层就是这样，很无奈，如果去城市里打工，那表示要丢下老人，让自己的孩子成为留守儿童。自此下定决心想要改变点什么。</p>
+</li>
+<li>
+<p>从工地回来后：凭借曾经弄着玩，学习到的一些电脑技术，开发了个小程序（大概30w+下载），在一些论坛小有名气，从网上赚了一点小钱（大概三千多，对当时的我来说已经非常多，我在工地打工一年累死累活才给了1.7w）。尝到了些甜头，自此，准备以后靠计算机生活。</p>
+</li>
+<li>
+<p>第一份正式工作：在网吧当了半年网管，期间自学了php和一些c语言，然后应聘了一家仅有六个人的公司，月薪4.5k，欣喜的不行。可惜好景不长，半年后公司倒闭了。</p>
+</li>
+<li>
+<p>混乱职业生涯的开始：随后继续当网管，充场，服务员，以及干一些开发的私活，大概两年，从事了很多职业，期间自学了go语言。之后去往长春，入职了一家外包公司，主要给公安第三研究所做项目，后来压力太大，工资太低所以离职。在之后便是疫情回到哈尔滨，封城，这段时间帮人看网吧，几乎什么技术都没学。疫情结束后去往杭州，拿了一份非常不错的薪水，可惜最后可能因为疫情期间玩过了，没有学习，技能生疏，被辞了，在出租房学了两个月rust语言，最后察觉负担不起之后的高昂房租，开始找工作。随后便经朋友推荐来了广东，到了现在的公司。</p>
+</li>
+</ul>
+<h1 id="现在---反思">现在 - 反思</h1>
+<p>从小打工到现在这些年，除了多了几根白头发，似乎什么也没有留下。一段时间在广东赚不到钱，怨天尤人，想死，但最后没死成，随后便开始躺平，摆烂。</p>
+<p>实话说，最开始写代码只是觉得好玩，做出一些小玩具在网上吹牛，折腾操作系统，各种小软件，开心的不行，根本意识不到这是在<code>写代码</code>。但工作后慢慢已经对写代码产生一些厌恶感。</p>
+<p>现在工作大多数时候我其实都在摸鱼，时而折腾linux，时而研究自己的小玩具，试图找回曾经的快乐。</p>
+<p>现在我应该做些什么？</p>
+<ol>
+<li>
+<p>学好英语，我的一些小项目，在discord面对老外提出的问题，如果不借助翻译，我几乎没法正常交流。</p>
+</li>
+<li>
+<p>多认识一些人，多认识一些好人，有切合实际的梦想并为之努力的人。</p>
+</li>
+<li>
+<p>多锻炼，我体质实在是太差了，稍微运动就累的不行，和前在工地打工的时候比起来简直差的离谱。</p>
+</li>
+<li>
+<p>处事圆滑一些，有些人能不理就不理，放平心态，以前直来直去引起过很多麻烦。</p>
+</li>
+<li>
+<p>尽量少折腾美化linux桌面，配置编辑器之类，够用就行。不然浪费了太多时间，钱没赚到也基本什么都学不到。</p>
+</li>
+</ol>
+<h1 id="未来---愿望">未来 - 愿望</h1>
+<p>存一些钱，在老家开个餐馆，业余时间能当一个独立开发者最好了。如果能搞一个自己的小团队也不错</p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">kk</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-09-06
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E7%94%9F%E6%B4%BB/">生活</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/pointersearch2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">编写一个通用指针搜索器（2）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/pointersearch1/">
+            <span class="next-text nav-default">编写一个通用指针搜索器（1）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:kekelanact@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/kekeimiku" class="iconfont icon-github" title="github"></a>
+  
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2025<span class="heart"><i class="iconfont icon-heart"></i></span><span></span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+<script>
+  function createCopyButton(highlightDiv) {
+    const div = document.createElement("div");
+    div.className = "copy-code";
+    div.innerText = "Copy";
+    div.addEventListener("click", () =>
+      copyCodeToClipboard(div, highlightDiv)
+    );
+    addCopyButtonToDom(div, highlightDiv);
+  }
+
+  async function copyCodeToClipboard(button, highlightDiv) {
+    const codeToCopy = highlightDiv.querySelector(":last-child > .chroma > code")
+      .innerText;
+    await navigator.clipboard.writeText(codeToCopy);
+    button.blur();
+    button.innerText = "Copied!";
+    setTimeout(() => button.innerText = "Copy", 2000);
+  }
+
+  function addCopyButtonToDom(button, highlightDiv) {
+    highlightDiv.insertBefore(button, highlightDiv.firstChild);
+    const wrapper = document.createElement("div");
+    wrapper.className = "highlight-wrapper";
+    highlightDiv.parentNode.insertBefore(wrapper, highlightDiv);
+    wrapper.appendChild(highlightDiv);
+  }
+
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(!isMobile){
+     document.querySelectorAll(".highlight").forEach((highlightDiv) => createCopyButton(highlightDiv));
+  }
+</script>  
+
+
+</body>
+</html>
