@@ -852,7 +852,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">thread_get_state</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span> <span class="n">thread_flavor</span><span class="p">,</span> <span class="p">(</span><span class="kt">thread_state_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">thread_state</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">thread_flavor_count</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">thread_state</span><span class="p">.</span><span class="n">__x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x79616265</span><span class="p">)</span> <span class="c1">// 执行完成
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">thread_state</span><span class="p">.</span><span class="n">__x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x444f4e45</span><span class="p">)</span> <span class="c1">// 执行完成
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>
 </span></span><span class="line"><span class="cl"><span class="c1">// 如果执行完成就直接杀死 shellcode 线程
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">thread_terminate</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span>
