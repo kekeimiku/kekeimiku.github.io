@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>ARM64 on KK</title>
+		<link>/tags/arm64/</link>
+		<description>Recent content in ARM64 on KK</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Wed, 22 Jul 2026 19:48:12 +0800</lastBuildDate>
+		
+			<atom:link href="/tags/arm64/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Xnip 破解</title>
+				<link>/post/xnip_crack/</link>
+				<pubDate>Wed, 22 Jul 2026 19:48:12 +0800</pubDate>
+				<guid>/post/xnip_crack/</guid>
+				<description>&lt;h2 id=&#34;先上效果图&#34;&gt;先上效果图&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;/assets/xnip.png&#34; alt=&#34;xnip_crack&#34;&gt;&lt;/p&gt;</description>
+			</item>
+	</channel>
+</rss>

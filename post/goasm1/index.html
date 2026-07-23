@@ -26,7 +26,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.158.0 with theme even" />
+<meta name="generator" content="Hugo 0.164.0 with theme even" />
 
 
 <link rel="canonical" href="/post/goasm1/" />
@@ -43,30 +43,30 @@
 
 
 <meta property="og:url" content="/post/goasm1/">
-  <meta property="og:site_name" content="KK">
-  <meta property="og:title" content="Go-Rust 编译器优化对比">
-  <meta property="og:description" content="Go release模式 编译为x86-64
+	<meta property="og:site_name" content="KK">
+	<meta property="og:title" content="Go-Rust 编译器优化对比">
+	<meta property="og:description" content="Go release模式 编译为x86-64
 我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式
 1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32, value uint16) { for i := 0; i &lt;= 15; i&#43;&#43; { bitToSet := ((value &gt;&gt; i) &amp; 1) != 0 *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) if bitToSet { *reg |= 1 &lt;&lt; (i &#43; 5) } else { *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) } } } 它生成的汇编是什么样的呢？">
-  <meta property="og:locale" content="en">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="post">
-    <meta property="article:published_time" content="2023-06-26T10:46:46+08:00">
-    <meta property="article:modified_time" content="2023-06-26T10:46:46+08:00">
-    <meta property="article:tag" content="Rust">
-    <meta property="article:tag" content="Go">
+	<meta property="og:locale" content="en">
+	<meta property="og:type" content="article">
+		<meta property="article:section" content="post">
+		<meta property="article:published_time" content="2023-06-26T10:46:46+08:00">
+		<meta property="article:modified_time" content="2023-06-26T10:46:46+08:00">
+		<meta property="article:tag" content="Rust">
+		<meta property="article:tag" content="Go">
 
-  <meta itemprop="name" content="Go-Rust 编译器优化对比">
-  <meta itemprop="description" content="Go release模式 编译为x86-64
+	<meta itemprop="name" content="Go-Rust 编译器优化对比">
+	<meta itemprop="description" content="Go release模式 编译为x86-64
 我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式
 1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32, value uint16) { for i := 0; i &lt;= 15; i&#43;&#43; { bitToSet := ((value &gt;&gt; i) &amp; 1) != 0 *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) if bitToSet { *reg |= 1 &lt;&lt; (i &#43; 5) } else { *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) } } } 它生成的汇编是什么样的呢？">
-  <meta itemprop="datePublished" content="2023-06-26T10:46:46+08:00">
-  <meta itemprop="dateModified" content="2023-06-26T10:46:46+08:00">
-  <meta itemprop="wordCount" content="1018">
-  <meta itemprop="keywords" content="Rust,Go">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Go-Rust 编译器优化对比">
-  <meta name="twitter:description" content="Go release模式 编译为x86-64
+	<meta itemprop="datePublished" content="2023-06-26T10:46:46+08:00">
+	<meta itemprop="dateModified" content="2023-06-26T10:46:46+08:00">
+	<meta itemprop="wordCount" content="1018">
+	<meta itemprop="keywords" content="Rust,Go">
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="Go-Rust 编译器优化对比">
+	<meta name="twitter:description" content="Go release模式 编译为x86-64
 我不知道Go除了使用 go build file.go 是否还有其它命令才能真正编译为release模式
 1 2 3 4 5 6 7 8 9 10 11 func setBit1(reg *uint32, value uint16) { for i := 0; i &lt;= 15; i&#43;&#43; { bitToSet := ((value &gt;&gt; i) &amp; 1) != 0 *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) if bitToSet { *reg |= 1 &lt;&lt; (i &#43; 5) } else { *reg &amp;= ^(1 &lt;&lt; (i &#43; 5)) } } } 它生成的汇编是什么样的呢？">
 
@@ -279,8 +279,8 @@
 </span><span class="lnt">55
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl">        <span class="nf">TEXT</span>    <span class="no">main.setBit1</span><span class="p">(</span><span class="no">SB</span><span class="p">),</span> <span class="no">NOSPLIT</span><span class="err">|</span><span class="no">ABIInternal</span><span class="p">,</span> <span class="no">$8-16</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">SUBQ</span>    <span class="no">$8</span><span class="p">,</span> <span class="no">SP</span>
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl">        <span class="nf">TEXT</span>    <span class="no">main.setBit1</span><span class="p">(</span><span class="no">SB</span><span class="p">),</span> <span class="no">NOSPLIT</span><span class="c1">|ABIInternal, $8-16
+</span></span></span><span class="line"><span class="cl">        <span class="nf">SUBQ</span>    <span class="no">$8</span><span class="p">,</span> <span class="no">SP</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">MOVQ</span>    <span class="no">BP</span><span class="p">,</span> <span class="p">(</span><span class="no">SP</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">LEAQ</span>    <span class="p">(</span><span class="no">SP</span><span class="p">),</span> <span class="no">BP</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$0</span><span class="p">,</span> <span class="no">gclocals</span><span class="err">·</span><span class="no">wgcWObbY2HYnK2SU</span><span class="err">/</span><span class="no">U22lA</span><span class="err">==</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
@@ -330,8 +330,8 @@
 </span></span><span class="line"><span class="cl">        <span class="nf">PCDATA</span>  <span class="no">$1</span><span class="p">,</span> <span class="no">$1</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">CALL</span>    <span class="no">runtime.panicshift</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">XCHGL</span>   <span class="no">AX</span><span class="p">,</span> <span class="no">AX</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">TEXT</span>    <span class="no">main.main</span><span class="p">(</span><span class="no">SB</span><span class="p">),</span> <span class="no">NOSPLIT</span><span class="err">|</span><span class="no">ABIInternal</span><span class="p">,</span> <span class="no">$0-0</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$0</span><span class="p">,</span> <span class="no">gclocals</span><span class="err">·</span><span class="no">g2BeySu</span><span class="err">+</span><span class="no">wFnoycgXfElmcg</span><span class="err">==</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">TEXT</span>    <span class="no">main.main</span><span class="p">(</span><span class="no">SB</span><span class="p">),</span> <span class="no">NOSPLIT</span><span class="c1">|ABIInternal, $0-0
+</span></span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$0</span><span class="p">,</span> <span class="no">gclocals</span><span class="err">·</span><span class="no">g2BeySu</span><span class="err">+</span><span class="no">wFnoycgXfElmcg</span><span class="err">==</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">FUNCDATA</span>        <span class="no">$1</span><span class="p">,</span> <span class="no">gclocals</span><span class="err">·</span><span class="no">g2BeySu</span><span class="err">+</span><span class="no">wFnoycgXfElmcg</span><span class="err">==</span><span class="p">(</span><span class="no">SB</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">RET</span>
 </span></span></code></pre></td></tr></table>

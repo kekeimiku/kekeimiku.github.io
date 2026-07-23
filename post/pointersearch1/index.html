@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.158.0 with theme even" />
+<meta name="generator" content="Hugo 0.164.0 with theme even" />
 
 
 <link rel="canonical" href="/post/pointersearch1/" />
@@ -41,27 +41,27 @@
 
 
 <meta property="og:url" content="/post/pointersearch1/">
-  <meta property="og:site_name" content="KK">
-  <meta property="og:title" content="编写一个通用指针搜索器（1）">
-  <meta property="og:description" content="什么是指针搜索 ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。">
-  <meta property="og:locale" content="en">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="post">
-    <meta property="article:published_time" content="2023-06-27T10:43:52+08:00">
-    <meta property="article:modified_time" content="2023-06-27T10:43:52+08:00">
-    <meta property="article:tag" content="逆向">
-    <meta property="article:tag" content="内存">
-    <meta property="article:tag" content="Rust">
+	<meta property="og:site_name" content="KK">
+	<meta property="og:title" content="编写一个通用指针搜索器（1）">
+	<meta property="og:description" content="什么是指针搜索 ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。">
+	<meta property="og:locale" content="en">
+	<meta property="og:type" content="article">
+		<meta property="article:section" content="post">
+		<meta property="article:published_time" content="2023-06-27T10:43:52+08:00">
+		<meta property="article:modified_time" content="2023-06-27T10:43:52+08:00">
+		<meta property="article:tag" content="逆向">
+		<meta property="article:tag" content="内存">
+		<meta property="article:tag" content="Rust">
 
-  <meta itemprop="name" content="编写一个通用指针搜索器（1）">
-  <meta itemprop="description" content="什么是指针搜索 ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。">
-  <meta itemprop="datePublished" content="2023-06-27T10:43:52+08:00">
-  <meta itemprop="dateModified" content="2023-06-27T10:43:52+08:00">
-  <meta itemprop="wordCount" content="3201">
-  <meta itemprop="keywords" content="逆向,内存,Rust">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="编写一个通用指针搜索器（1）">
-  <meta name="twitter:description" content="什么是指针搜索 ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。">
+	<meta itemprop="name" content="编写一个通用指针搜索器（1）">
+	<meta itemprop="description" content="什么是指针搜索 ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。">
+	<meta itemprop="datePublished" content="2023-06-27T10:43:52+08:00">
+	<meta itemprop="dateModified" content="2023-06-27T10:43:52+08:00">
+	<meta itemprop="wordCount" content="3201">
+	<meta itemprop="keywords" content="逆向,内存,Rust">
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="编写一个通用指针搜索器（1）">
+	<meta name="twitter:description" content="什么是指针搜索 ASLR导致程序内存地址在启动程序时始终不同。所谓的“静态”地址是相对于程序代码（BinaryFile）的地址。有了静态地址，一旦找到它，你就可以稳定计算出这个地址，因为加载程序（BinaryFile）的地址很容易找到。不幸的是，并非所有感兴趣的内存都是“静态的”，因为这些要么需要代码黑客（通常称为ASM HACK），要么需要指针链（找到此链的过程通常被称为指针搜索）。">
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
